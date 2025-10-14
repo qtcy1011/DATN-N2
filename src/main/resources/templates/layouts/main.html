@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'StayEZ Hotel Booking'">StayEZ Hotel Booking</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap.min.css}">
+</head>
+<body>
+
+<!-- HEADER -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- CONTENT -->
+<main role="main">
+    <div th:insert="${content}"></div>
+</main>
+
+<!-- FOOTER -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
