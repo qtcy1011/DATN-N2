@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết Quả Tìm Kiếm</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { color: #333; }
+        .search-query { font-weight: bold; color: #007bff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .no-results { color: #dc3545; margin-top: 20px; }
+        .back-link { margin-top: 20px; display: block; }
+    </style>
+</head>
+<body>
+
+    <h2>Kết quả tìm kiếm cho: <span class="search-query" th:text="${searchCity}">Hà Nội</span></h2>
+
+    <div th:if="${not #lists.isEmpty(hotelList)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã KS</th>
+                    <th>Tên Khách Sạn</th>
+                    <th>Địa Chỉ</th>
+                    <th>Số Sao</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="hotel : ${hotelList}">
+                    <td th:text="${hotel.maKhachSan}">1</td>
+                    <td th:text="${hotel.tenKhachSan}">Khách sạn A</td>
+                    <td th:text="${hotel.diaChi}">123 Đường XYZ, TP.HCM</td>
+                    <td th:text="${hotel.soSao}">5</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p th:if="${#lists.isEmpty(hotelList)}" class="no-results">
+        Xin lỗi, không tìm thấy khách sạn nào ở thành phố <span th:text="${searchCity}"></span>.
+    </p>
+    
+    <a th:href="@{/search}" class="back-link">← Quay lại trang tìm kiếm</a>
+
+</body>
+</html>

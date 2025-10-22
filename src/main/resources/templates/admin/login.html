@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng Nhập Khách Hàng</title>
+    <title>Đăng Nhập Quản Trị</title>
     <style>
         /* -------------------------- */
         /* Cấu trúc chung */
@@ -38,7 +38,7 @@
             color: #343a40; 
             margin-bottom: 30px; 
             font-weight: 600; 
-            border-bottom: 2px solid #007bff; 
+            border-bottom: 2px solid #dc3545; /* Dùng màu đỏ/cam cho Admin */
             padding-bottom: 10px;
         }
 
@@ -67,18 +67,18 @@
         }
 
         input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #007bff; 
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); 
+            border-color: #dc3545; 
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); 
             outline: none;
         }
 
         /* -------------------------- */
-        /* Button */
+        /* Button (Màu Admin) */
         /* -------------------------- */
         button { 
             width: 100%; 
             padding: 12px; 
-            background-color: #007bff; 
+            background-color: #dc3545; /* Màu Admin (Đỏ) */
             color: white; 
             border: none; 
             border-radius: 6px; 
@@ -89,7 +89,7 @@
         }
 
         button:hover { 
-            background-color: #0056b3; 
+            background-color: #c82333; 
             transform: translateY(-1px); 
         }
 
@@ -117,7 +117,7 @@
         }
         
         /* -------------------------- */
-        /* Liên kết Đăng ký */
+        /* Liên kết */
         /* -------------------------- */
         .register-link { 
             text-align: center; 
@@ -127,7 +127,7 @@
         }
         
         .register-link a {
-            color: #007bff;
+            color: #dc3545; 
             text-decoration: none;
             font-weight: 500;
         }
@@ -140,21 +140,13 @@
 <body>
 
 <div class="login-container">
-    <h2>Đăng Nhập Khách Hàng</h2>
+    <h2>Đăng Nhập Quản Trị</h2>
 
     <div th:if="${param.error}" class="alert-message alert-error">
-        <strong>Lỗi:</strong> Tên đăng nhập hoặc mật khẩu không đúng.
+        <strong>Lỗi:</strong> Tài khoản Quản trị hoặc mật khẩu không đúng.
     </div>
 
-    <div th:if="${param.logout}" class="alert-message alert-success">
-        Bạn đã đăng xuất thành công.
-    </div>
-    
-    <div th:if="${param.registered}" class="alert-message alert-success">
-        Đăng ký thành công! Vui lòng đăng nhập.
-    </div>
-
-    <form th:action="@{/login}" method="post">
+    <form th:action="@{/admin/login}" method="post">
         <div class="form-group">
             <label for="username">Email/Tên đăng nhập:</label>
             <input type="text" id="username" name="username" required> 
@@ -168,12 +160,11 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         </div>
         
-        <button type="submit">Đăng Nhập</button>
+        <button type="submit">Đăng Nhập Admin</button>
     </form>
     
     <div class="register-link">
-        Chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a>
-        | <a th:href="@{/admin/login}">Đăng nhập Admin</a>
+        <a th:href="@{/login}">Quay lại trang Đăng nhập Khách hàng</a>
     </div>
 </div>
 

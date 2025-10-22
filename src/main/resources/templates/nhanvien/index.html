@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang quản trị (Admin)</title>
+    <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+    <h1>Chào mừng Admin!</h1>
+    
+    <p>Bạn đã đăng nhập thành công với quyền: 
+        <span sec:authentication="authorities"></span>
+    </p>
+
+    <ul>
+        <li><a th:href="@{/admin/products}">Quản lý Phòng</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/users}">Quản lý Khách Hàng</a></li>
+    </ul>
+
+    <form th:action="@{/admin/logout}" method="post">
+        <button type="submit">Đăng xuất</button>
+    </form>
+</body>
+</html>

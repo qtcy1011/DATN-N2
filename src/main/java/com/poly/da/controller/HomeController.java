@@ -1,18 +1,18 @@
 package com.poly.da.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
-
-    @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("appName", "DATN-N2");
+    /**
+     * Xử lý yêu cầu truy cập trang chủ.
+     * Ánh xạ các URL: /, /home, /index
+     */
+    @GetMapping({"/", "/home", "/index"})
+    public String homePage() {
 
         return "index"; 
     }
-
 }
