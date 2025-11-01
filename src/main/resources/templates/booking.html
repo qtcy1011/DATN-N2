@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt Khách Sạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS CHUNG */
+        :root {
+            --primary-blue: #007bff; /* Màu xanh chủ đạo */
+            --dark-blue: #0056b3;    /* Xanh đậm hơn khi hover */
+            --text-color: #333;      /* Màu chữ chính */
+            --bg-dark-overlay: rgba(0, 0, 0, 0.5); /* Overlay nền đậm */
+            --bg-light-overlay: rgba(255, 255, 255, 0.9); /* Overlay nền sáng cho kết quả */
+            --border-color: #e0e0e0; /* Màu viền input */
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* Ví dụ ảnh nền mặc định nếu không dùng Thymeleaf */
+            background-image: url('https://picsum.photos/1600/900?city'); 
+        }
+
+        /* Overlay */
+        .overlay {
+            background: var(--bg-dark-overlay);
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* Container chính */
+        .booking-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 900px;
+            box-sizing: border-box;
+        }
+
+        .booking-container h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px var(--shadow-medium);
+        }
+
+        .booking-container h1 span {
+            color: var(--primary-blue);
+            text-shadow: 1px 1px 2px var(--shadow-light);
+        }
+
+        /* Hộp tìm kiếm */
+        .search-box {
+            background-color: white;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            padding: 20px;
+            gap: 15px;
+            z-index: 2;
+            width: 100%;
+            max-width: 800px;
+            color: var(--text-color);
+            box-shadow: 0 8px 20px var(--shadow-medium);
+        }
+
+        .search-box > div {
+            flex: 1 1 auto;
+            min-width: 150px;
+        }
+
+        .search-box label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .search-box input,
+        .search-box select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-box input:focus,
+        .search-box select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        .search-box button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            flex-grow: 0;
+            min-width: 120px;
+            box-shadow: 0 4px 10px var(--shadow-light);
+        }
+
+        .search-box button:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+        
+        /* --- KẾT QUẢ TÌM KIẾM (MỚI) --- */
+        .results-container {
+            background-color: var(--bg-light-overlay); 
+            color: var(--text-color);
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            text-align: left;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            animation: fadeIn 0.5s ease-out; /* Hiệu ứng hiện ra */
+        }
+
+        #results-heading {
+            font-size: 1.8em;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .hotel-list {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .hotel-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px var(--shadow-light);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+
+        .hotel-card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            /* Ảnh minh họa */
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: #777;
+        }
+
+        .hotel-card-content {
+            padding: 15px;
+        }
+
+        .hotel-card-content h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+            color: var(--dark-blue);
+        }
+
+        .hotel-card-content p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .hotel-card-price {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .booking-container h1 { font-size: 2em; margin-bottom: 25px; }
+            .search-box { flex-direction: column; padding: 15px; gap: 12px; }
+            .search-box > div { min-width: 100%; }
+            .search-box button { width: 100%; padding: 15px; }
+            .results-container { padding: 15px; }
+            .hotel-list { grid-template-columns: 1fr; }
+            #results-heading { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body th:style="'background-image: url(/images/' + ${place} + '.jpg)'">
+<div class="overlay"></div>
+<div class="booking-container">
+    <h1>Khách sạn và nơi để ở tại <span id="display-place" th:text="${selectedPlace}">[Tên Thành Phố]</span></h1>
+
+    <div class="search-box">
+        <div>
+            <label for="location">Địa điểm</label>
+            <input type="text" id="location"
+                   th:value="${selectedPlace}"
+                   placeholder="Nhập địa điểm (VD: Đà Nẵng, Huế...)">
+        </div>
+        <div>
+            <label for="checkin">Ngày nhận phòng</label>
+            <input type="date" id="checkin">
+        </div>
+        <div>
+            <label for="checkout">Ngày trả phòng</label>
+            <input type="date" id="checkout">
+        </div>
+        <div>
+            <label for="guests">Số khách & phòng</label>
+            <select id="guests">
+                <option>1 người lớn, 1 phòng</option>
+                <option selected>2 người lớn, 1 phòng</option>
+                <option>2 người lớn, 2 phòng</option>
+                <option>Gia đình (4 người)</option>
+            </select>
+        </div>
+        <button onclick="searchHotels()">TÌM</button>
+    </div>
+
+    <div id="search-results-container" class="results-container" style="display:none;">
+        <h2 id="results-heading"></h2>
+        <div id="hotel-list" class="hotel-list">
+            </div>
+    </div>
+    </div>
+
+<script th:inline="javascript">
+    // --- JAVASCRIPT LOGIC ---
+    
+    // Khởi tạo giá trị mặc định cho các trường input
+    document.addEventListener('DOMContentLoaded', () => {
+        // Thiết lập ngày mặc định
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const formatDate = (date) => {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+
+        document.getElementById('checkin').value = formatDate(today);
+        document.getElementById('checkout').value = formatDate(tomorrow);
+        
+        // Thiết lập địa điểm mặc định nếu không dùng Thymeleaf
+        const defaultPlace = "Hồ Chí Minh";
+        const rawPlaceName = /*[[${selectedPlace}]]*/ defaultPlace;
+
+        function formatPlaceName(name) {
+            if (!name || name === defaultPlace) return defaultPlace;
+            // Chuyển đổi CamelCase hoặc nối liền thành có khoảng trắng và viết hoa chữ cái đầu mỗi từ
+            return name
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, str => str.toUpperCase())
+                .trim();
+        }
+
+        const formattedPlaceName = formatPlaceName(rawPlaceName);	
+
+        // Cập nhật giá trị cho input và hiển thị tên địa điểm
+        document.getElementById("location").value = formattedPlaceName;
+        document.getElementById("display-place").textContent = formattedPlaceName;
+    });
+
+
+    // Hàm Xử lý khi nhấn nút TÌM
+    function searchHotels() {
+        const city = document.getElementById("location").value;
+        const checkin = document.getElementById("checkin").value;
+        const checkout = document.getElementById("checkout").value;
+        const guests = document.getElementById("guests").value;
+
+        const resultsContainer = document.getElementById('search-results-container');
+        const resultsHeading = document.getElementById('results-heading');
+        const hotelList = document.getElementById('hotel-list');
+
+        if (!city) {
+            alert("Vui lòng nhập địa điểm!");
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        // 1. Cập nhật tiêu đề kết quả
+        resultsHeading.textContent = `Các Khách Sạn Tốt Nhất tại ${city} (${guests})`;
+        
+        // 2. Tạo dữ liệu giả lập (THỰC TẾ: BẠN CẦN GỌI API TẠI ĐÂY)
+        const hotels = [
+            { name: "Khách sạn View Biển Xanh", rating: 4.5, price: "1.200.000 VNĐ/đêm", description: "Gần trung tâm, hồ bơi vô cực." },
+            { name: "Resort Ngôi Sao", rating: 4.8, price: "2.850.000 VNĐ/đêm", description: "Khu nghỉ dưỡng cao cấp, bãi biển riêng." },
+            { name: "Homestay Ấm Cúng", rating: 4.2, price: "550.000 VNĐ/đêm", description: "Phòng đôi, không gian xanh mát." },
+            { name: "Khách sạn Giá Rẻ Tốt", rating: 3.9, price: "390.000 VNĐ/đêm", description: "Phù hợp cho du lịch tiết kiệm." },
+            { name: "Khách sạn Trung Tâm", rating: 4.3, price: "800.000 VNĐ/đêm", description: "Vị trí đắc địa, gần khu mua sắm." }
+        ];
+
+        // 3. Tạo HTML cho từng khách sạn
+        let hotelsHtml = '';
+        if (hotels.length > 0) {
+            hotels.forEach(hotel => {
+                // Giả lập màu ảnh nền khác nhau cho card
+                const randomColor = `hsl(${Math.random() * 360}, 50%, 90%)`; 
+                hotelsHtml += `
+                    <div class="hotel-card">
+                        <div class="hotel-card-image" style="background: ${randomColor};">Ảnh Khách Sạn</div>
+                        <div class="hotel-card-content">
+                            <h3>${hotel.name}</h3>
+                            <p>⭐ ${hotel.rating} sao | Nhận phòng: ${checkin.split('-').reverse().join('/')}</p>
+                            <p>${hotel.description}</p>
+                            <div class="hotel-card-price">${hotel.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            hotelsHtml = `<p style="text-align: center; font-style: italic;">Không tìm thấy khách sạn nào tại ${city}.</p>`;
+        }
+
+        // 4. Chèn HTML vào danh sách
+        hotelList.innerHTML = hotelsHtml;
+
+        // 5. Hiển thị khu vực kết quả
+        resultsContainer.style.display = 'block';
+
+        // 6. Cuộn xuống khu vực kết quả
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+</script>
+</body>
+</html>
