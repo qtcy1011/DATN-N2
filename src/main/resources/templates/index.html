@@ -209,6 +209,164 @@
             </div>
         </div>
     </div>
+    <div class="popular-destinations" style="padding: 50px 0; background-color: #fff; position: relative;">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">
+        Các điểm đến thu hút nhất Việt Nam
+    </h2>
+
+    <!-- Nút Prev -->
+    <button onclick="scrollPrev()" style="
+        position: absolute;
+        left: 0;
+        top: 55%;
+        transform: translateY(-50%);
+        background-color: white;
+        color: #333;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        font-size: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        z-index: 10;
+    ">‹</button>
+
+    <!-- Container -->
+    <div id="destination-container" style="
+        display: flex;
+        gap: 25px;
+        max-width: 1100px;
+        margin: 0 auto;
+        overflow: hidden;
+        scroll-behavior: smooth;
+        padding: 0 50px;
+    ">
+
+        <!-- Hồ Chí Minh -->
+        <div class="destination" onclick="goToBooking('HoChiMinh')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/HCM.jpg}" alt="Hồ Chí Minh"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Hồ Chí Minh</p>
+            <p style="color: gray;">15,546 chỗ ở</p>
+        </div>
+
+        <!-- Hà Nội -->
+        <div class="destination" onclick="goToBooking('HaNoi')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/HaNoi.jpg}" alt="Hà Nội"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Hà Nội</p>
+            <p style="color: gray;">10,744 chỗ ở</p>
+        </div>
+
+        <!-- Đà Nẵng -->
+        <div class="destination" onclick="goToBooking('DaNang')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/DaNang.jpg}" alt="Đà Nẵng"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Đà Nẵng</p>
+            <p style="color: gray;">6,534 chỗ ở</p>
+        </div>
+
+        <!-- Nha Trang -->
+        <div class="destination" onclick="goToBooking('NhaTrang')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/NhaTrang.jpg}" alt="Nha Trang"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Nha Trang</p>
+            <p style="color: gray;">6,329 chỗ ở</p>
+        </div>
+
+        <!-- Đà Lạt -->
+        <div class="destination" onclick="goToBooking('DaLat')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/DaLat.jpg}" alt="Đà Lạt"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Đà Lạt</p>
+            <p style="color: gray;">5,748 chỗ ở</p>
+        </div>
+
+        <!-- Huế -->
+        <div class="destination" onclick="goToBooking('Hue')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/Hue.jpg}" alt="Huế"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Huế</p>
+            <p style="color: gray;">6,975 chỗ ở</p>
+        </div>
+
+        <!-- Hạ Long -->
+        <div class="destination" onclick="goToBooking('HaLong')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/HaLong.jpg}" alt="Hạ Long"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Hạ Long</p>
+            <p style="color: gray;">8,157 chỗ ở</p>
+        </div>
+
+        <!-- Hội An -->
+        <div class="destination" onclick="goToBooking('HoiAn')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/HoiAn.jpg}" alt="Hội An"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Hội An</p>
+            <p style="color: gray;">4,876 chỗ ở</p>
+        </div>
+
+        <!-- Phan Thiết -->
+        <div class="destination" onclick="goToBooking('PhanThiet')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/PhanThiet.jpg}" alt="Phan Thiết"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Phan Thiết</p>
+            <p style="color: gray;">3,749 chỗ ở</p>
+        </div>
+
+        <!-- Quy Nhơn -->
+        <div class="destination" onclick="goToBooking('QuyNhon')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/QuyNhon.jpg}" alt="Quy Nhơn"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Quy Nhơn</p>
+            <p style="color: gray;">2,755 chỗ ở</p>
+        </div>
+
+        <!-- Phú Quốc -->
+        <div class="destination" onclick="goToBooking('PhuQuoc')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/PhuQuoc.jpg}" alt="Phú Quốc"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Phú Quốc</p>
+            <p style="color: gray;">2,348 chỗ ở</p>
+        </div>
+
+    </div>
+
+    <!-- Nút Next -->
+    <button onclick="scrollNext()" style="
+        position: absolute;
+        right: 0;
+        top: 55%;
+        transform: translateY(-50%);
+        background-color: white;
+        color: #333;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        font-size: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        z-index: 10;
+    ">›</button>
+</div>
+
+<script>
+    // Sửa lỗi: Chỉ sử dụng JavaScript để tạo URL có tham số
+    function goToBooking(place) {
+        // Nó sẽ tạo ra đường dẫn ví dụ: /booking?place=HoChiMinh
+        window.location.href = '/booking?place=' + place;
+    }
+
+    function scrollNext() {
+        document.getElementById("destination-container").scrollBy({ left: 250, behavior: 'smooth' });
+    }
+
+    function scrollPrev() {
+        document.getElementById("destination-container").scrollBy({ left: -250, behavior: 'smooth' });
+    }
+</script>
     
     </body>
 </html>
