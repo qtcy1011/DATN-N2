@@ -209,28 +209,28 @@
             </div>
         </div>
     </div>
-    <div class="popular-destinations" style="padding: 50px 0; background-color: #fff; position: relative;">
+ <div class="popular-destinations" style="padding: 50px 0; background-color: #fff; position: relative;">
     <h2 style="text-align: center; margin-bottom: 30px; color: #333;">
         Các điểm đến thu hút nhất Việt Nam
     </h2>
 
-    <!-- Nút Prev -->
-    <button onclick="scrollPrev()" style="
-        position: absolute;
-        left: 0;
-        top: 55%;
-        transform: translateY(-50%);
-        background-color: white;
-        color: #333;
-        border: 1px solid #ccc;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        font-size: 20px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        z-index: 10;
-    ">‹</button>
+   <!-- Nút Prev -->
+	<button onclick="scrollPrev()" style="
+    	position: absolute;
+    	left: 0px;
+    	top: 55%;
+    	transform: translateY(-50%);
+    	background-color: white;
+    	color: #333;
+    	border: 1px solid #ccc;
+    	border-radius: 50%;
+    	width: 40px;
+    	height: 40px;
+    	cursor: pointer;
+    	font-size: 20px;
+    	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    	z-index: 10;
+	">‹</button>
 
     <!-- Container -->
     <div id="destination-container" style="
@@ -334,38 +334,73 @@
     </div>
 
     <!-- Nút Next -->
-    <button onclick="scrollNext()" style="
-        position: absolute;
-        right: 0;
-        top: 55%;
-        transform: translateY(-50%);
-        background-color: white;
-        color: #333;
-        border: 1px solid #ccc;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        font-size: 20px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        z-index: 10;
-    ">›</button>
+	<button onclick="scrollNext()" style="
+    	position: absolute;
+    	right: 15px;
+    	top: 55%;
+    	transform: translateY(-50%);
+    	background-color: white;
+    	color: #333;
+   	 	border: 1px solid #ccc;
+   	 	border-radius: 50%;
+    	width: 40px;
+    	height: 40px;
+    	cursor: pointer;
+    	font-size: 20px;
+    	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    	z-index: 10;
+	">›</button>
 </div>
 
 <script>
-    // Sửa lỗi: Chỉ sử dụng JavaScript để tạo URL có tham số
-    function goToBooking(place) {
-        // Nó sẽ tạo ra đường dẫn ví dụ: /booking?place=HoChiMinh
-        window.location.href = '/booking?place=' + place;
-    }
+	// Hàm điều hướng đến trang đặt chỗ
+	function goToBooking(place) {
+    window.location.href = '/booking?place=' + place;
+}
 
-    function scrollNext() {
-        document.getElementById("destination-container").scrollBy({ left: 250, behavior: 'smooth' });
-    }
+	const container = document.getElementById("destination-container");
 
-    function scrollPrev() {
-        document.getElementById("destination-container").scrollBy({ left: -250, behavior: 'smooth' });
-    }
+	// --- Hàm Next ---
+	function scrollNext() {
+    	// Nếu đã cuộn tới cuối => quay lại đầu
+    	if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+        	container.scrollTo({ left: 0, behavior: 'smooth' });
+    	} else {
+        	container.scrollBy({ left: 250, behavior: 'smooth' });
+    	}
+	}
+
+	// --- Hàm Prev ---
+	function scrollPrev() {
+    	// Nếu đang ở đầu => nhảy đến cuối
+   		if (container.scrollLeft <= 0) {
+        	container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+    	} else {
+        	container.scrollBy({ left: -250, behavior: 'smooth' });
+    	}
+	}
+
+	// --- Tự động cuộn điểm đến ---
+	let autoScrollInterval;
+
+	function startAutoScroll() {
+    	autoScrollInterval = setInterval(() => {
+        	if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+            	container.scrollTo({ left: 0, behavior: 'smooth' });
+        	} else {
+            	container.scrollBy({ left: 250, behavior: 'smooth' });
+        	}
+    	}, 3000); // tự chuyển mỗi 3 giây
+}
+
+	// Bắt đầu auto-scroll khi tải trang
+	window.addEventListener("load", startAutoScroll);
+
+	// Dừng khi rê chuột vào
+	container.addEventListener("mouseenter", () => clearInterval(autoScrollInterval));
+
+	// Tiếp tục khi rê chuột ra
+	container.addEventListener("mouseleave", startAutoScroll);
 </script>
     
     </body>
