@@ -306,18 +306,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${yyyy}-${mm}-${dd}`;
     };
 
+    // Gán mặc định ngày hôm nay và mai
     document.getElementById('checkin').value = formatDate(today);
     document.getElementById('checkout').value = formatDate(tomorrow);
 
+    // 🟦 Lấy 'place' từ URL (VD: ?place=Sapa)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPlace = urlParams.get('place');
+
+    // 🟨 Nếu có place trong URL → dùng nó, nếu không thì dùng giá trị từ Thymeleaf
     const defaultPlace = "Hồ Chí Minh";
-    const rawPlaceName = /*[[${selectedPlace}]]*/ defaultPlace;
+    const rawPlaceName = urlPlace || /*[[${selectedPlace}]]*/ defaultPlace;
 
-    function formatPlaceName(name) {
-        if (!name || name === defaultPlace) return defaultPlace;
-        return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
-    }
+    // 🟩 Map tên vùng cho đẹp (nếu là tên không dấu hoặc viết liền)
+    const placesMap = {
+        HoChiMinh: "Hồ Chí Minh",
+        HaNoi: "Hà Nội",
+        DaNang: "Đà Nẵng",
+        NhaTrang: "Nha Trang",
+        DaLat: "Đà Lạt",
+        Hue: "Huế",
+        HaLong: "Hạ Long",
+        HoiAn: "Hội An",
+        PhanThiet: "Phan Thiết",
+        QuyNhon: "Quy Nhơn",
+        PhuQuoc: "Phú Quốc",
+        CanTho: "Cần Thơ",
+        VungTau: "Vũng Tàu",
+        DongNai: "Đồng Nai",
+        Sapa: "Sapa"
+    };
 
-    const formattedPlaceName = formatPlaceName(rawPlaceName);
+    // 🟦 Nếu có trong map thì dùng tên chuẩn, nếu không thì giữ nguyên
+    const formattedPlaceName = placesMap[rawPlaceName] || rawPlaceName || defaultPlace;
+
+    // 🟩 Gán vào giao diện
     document.getElementById("location").value = formattedPlaceName;
     document.getElementById("display-place").textContent = formattedPlaceName;
 });
@@ -368,5 +391,6 @@ function searchHotels() {
     resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
+
 </body>
 </html>
