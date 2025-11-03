@@ -8,12 +8,12 @@
     <style>
         /* CSS CHUNG */
         :root {
-            --primary-blue: #007bff; /* Màu xanh chủ đạo */
-            --dark-blue: #0056b3;    /* Xanh đậm hơn khi hover */
-            --text-color: #333;      /* Màu chữ chính */
-            --bg-dark-overlay: rgba(0, 0, 0, 0.5); /* Overlay nền đậm */
-            --bg-light-overlay: rgba(255, 255, 255, 0.9); /* Overlay nền sáng cho kết quả */
-            --border-color: #e0e0e0; /* Màu viền input */
+            --primary-blue: #007bff;
+            --dark-blue: #0056b3;
+            --text-color: #333;
+            --bg-dark-overlay: rgba(0, 0, 0, 0.5);
+            --bg-light-overlay: rgba(255, 255, 255, 0.9);
+            --border-color: #e0e0e0;
             --shadow-light: rgba(0, 0, 0, 0.1);
             --shadow-medium: rgba(0, 0, 0, 0.2);
         }
@@ -31,11 +31,9 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            /* Ví dụ ảnh nền mặc định nếu không dùng Thymeleaf */
-            background-image: url('https://picsum.photos/1600/900?city'); 
+            background-image: url('https://picsum.photos/1600/900?city');
         }
 
-        /* Overlay */
         .overlay {
             background: var(--bg-dark-overlay);
             position: absolute;
@@ -43,7 +41,29 @@
             z-index: 1;
         }
 
-        /* Container chính */
+        /* 🔙 Nút quay lại ngoài cùng */
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 3;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px var(--shadow-light);
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--shadow-medium);
+        }
+
         .booking-container {
             position: relative;
             z-index: 2;
@@ -70,7 +90,6 @@
             text-shadow: 1px 1px 2px var(--shadow-light);
         }
 
-        /* Hộp tìm kiếm */
         .search-box {
             background-color: white;
             display: flex;
@@ -140,9 +159,8 @@
             box-shadow: 0 6px 15px var(--shadow-medium);
         }
         
-        /* --- KẾT QUẢ TÌM KIẾM (MỚI) --- */
         .results-container {
-            background-color: var(--bg-light-overlay); 
+            background-color: var(--bg-light-overlay);
             color: var(--text-color);
             margin-top: 30px;
             padding: 25px;
@@ -151,7 +169,7 @@
             max-width: 800px;
             text-align: left;
             box-shadow: 0 4px 15px var(--shadow-medium);
-            animation: fadeIn 0.5s ease-out; /* Hiệu ứng hiện ra */
+            animation: fadeIn 0.5s ease-out;
         }
 
         #results-heading {
@@ -186,7 +204,6 @@
             width: 100%;
             height: 180px;
             object-fit: cover;
-            /* Ảnh minh họa */
             background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
             display: flex;
             align-items: center;
@@ -224,7 +241,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .booking-container h1 { font-size: 2em; margin-bottom: 25px; }
             .search-box { flex-direction: column; padding: 15px; gap: 12px; }
@@ -236,17 +252,20 @@
         }
     </style>
 </head>
+
 <body th:style="'background-image: url(/images/' + ${place} + '.jpg)'">
 <div class="overlay"></div>
+
+<!-- 🔙 Nút quay lại ở ngoài cùng -->
+<a href="javascript:history.back()" class="back-btn">⬅ Quay lại</a>
+
 <div class="booking-container">
     <h1>Khách sạn và nơi để ở tại <span id="display-place" th:text="${selectedPlace}">[Tên Thành Phố]</span></h1>
 
     <div class="search-box">
         <div>
             <label for="location">Địa điểm</label>
-            <input type="text" id="location"
-                   th:value="${selectedPlace}"
-                   placeholder="Nhập địa điểm (VD: Đà Nẵng, Huế...)">
+            <input type="text" id="location" th:value="${selectedPlace}" placeholder="Nhập địa điểm (VD: Đà Nẵng, Huế...)">
         </div>
         <div>
             <label for="checkin">Ngày nhận phòng</label>
@@ -270,112 +289,84 @@
 
     <div id="search-results-container" class="results-container" style="display:none;">
         <h2 id="results-heading"></h2>
-        <div id="hotel-list" class="hotel-list">
-            </div>
+        <div id="hotel-list" class="hotel-list"></div>
     </div>
-    </div>
+</div>
 
 <script th:inline="javascript">
-    // --- JAVASCRIPT LOGIC ---
-    
-    // Khởi tạo giá trị mặc định cho các trường input
-    document.addEventListener('DOMContentLoaded', () => {
-        // Thiết lập ngày mặc định
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-        const formatDate = (date) => {
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
-        };
+    const formatDate = (date) => {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
 
-        document.getElementById('checkin').value = formatDate(today);
-        document.getElementById('checkout').value = formatDate(tomorrow);
-        
-        // Thiết lập địa điểm mặc định nếu không dùng Thymeleaf
-        const defaultPlace = "Hồ Chí Minh";
-        const rawPlaceName = /*[[${selectedPlace}]]*/ defaultPlace;
+    document.getElementById('checkin').value = formatDate(today);
+    document.getElementById('checkout').value = formatDate(tomorrow);
 
-        function formatPlaceName(name) {
-            if (!name || name === defaultPlace) return defaultPlace;
-            // Chuyển đổi CamelCase hoặc nối liền thành có khoảng trắng và viết hoa chữ cái đầu mỗi từ
-            return name
-                .replace(/([A-Z])/g, ' $1')
-                .replace(/^./, str => str.toUpperCase())
-                .trim();
-        }
+    const defaultPlace = "Hồ Chí Minh";
+    const rawPlaceName = /*[[${selectedPlace}]]*/ defaultPlace;
 
-        const formattedPlaceName = formatPlaceName(rawPlaceName);	
+    function formatPlaceName(name) {
+        if (!name || name === defaultPlace) return defaultPlace;
+        return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
+    }
 
-        // Cập nhật giá trị cho input và hiển thị tên địa điểm
-        document.getElementById("location").value = formattedPlaceName;
-        document.getElementById("display-place").textContent = formattedPlaceName;
+    const formattedPlaceName = formatPlaceName(rawPlaceName);
+    document.getElementById("location").value = formattedPlaceName;
+    document.getElementById("display-place").textContent = formattedPlaceName;
+});
+
+function searchHotels() {
+    const city = document.getElementById("location").value;
+    const checkin = document.getElementById("checkin").value;
+    const checkout = document.getElementById("checkout").value;
+    const guests = document.getElementById("guests").value;
+
+    const resultsContainer = document.getElementById('search-results-container');
+    const resultsHeading = document.getElementById('results-heading');
+    const hotelList = document.getElementById('hotel-list');
+
+    if (!city) {
+        alert("Vui lòng nhập địa điểm!");
+        resultsContainer.style.display = 'none';
+        return;
+    }
+
+    resultsHeading.textContent = `Các Khách Sạn Tốt Nhất tại ${city} (${guests})`;
+
+    const hotels = [
+        { name: "Khách sạn View Biển Xanh", rating: 4.5, price: "1.200.000 VNĐ/đêm", description: "Gần trung tâm, hồ bơi vô cực." },
+        { name: "Resort Ngôi Sao", rating: 4.8, price: "2.850.000 VNĐ/đêm", description: "Khu nghỉ dưỡng cao cấp, bãi biển riêng." },
+        { name: "Homestay Ấm Cúng", rating: 4.2, price: "550.000 VNĐ/đêm", description: "Phòng đôi, không gian xanh mát." },
+        { name: "Khách sạn Giá Rẻ Tốt", rating: 3.9, price: "390.000 VNĐ/đêm", description: "Phù hợp cho du lịch tiết kiệm." },
+        { name: "Khách sạn Trung Tâm", rating: 4.3, price: "800.000 VNĐ/đêm", description: "Vị trí đắc địa, gần khu mua sắm." }
+    ];
+
+    let hotelsHtml = '';
+    hotels.forEach(hotel => {
+        const randomColor = `hsl(${Math.random() * 360}, 50%, 90%)`; 
+        hotelsHtml += `
+            <div class="hotel-card">
+                <div class="hotel-card-image" style="background: ${randomColor};">Ảnh Khách Sạn</div>
+                <div class="hotel-card-content">
+                    <h3>${hotel.name}</h3>
+                    <p>⭐ ${hotel.rating} sao | Nhận phòng: ${checkin.split('-').reverse().join('/')}</p>
+                    <p>${hotel.description}</p>
+                    <div class="hotel-card-price">${hotel.price}</div>
+                </div>
+            </div>`;
     });
 
-
-    // Hàm Xử lý khi nhấn nút TÌM
-    function searchHotels() {
-        const city = document.getElementById("location").value;
-        const checkin = document.getElementById("checkin").value;
-        const checkout = document.getElementById("checkout").value;
-        const guests = document.getElementById("guests").value;
-
-        const resultsContainer = document.getElementById('search-results-container');
-        const resultsHeading = document.getElementById('results-heading');
-        const hotelList = document.getElementById('hotel-list');
-
-        if (!city) {
-            alert("Vui lòng nhập địa điểm!");
-            resultsContainer.style.display = 'none';
-            return;
-        }
-
-        // 1. Cập nhật tiêu đề kết quả
-        resultsHeading.textContent = `Các Khách Sạn Tốt Nhất tại ${city} (${guests})`;
-        
-        // 2. Tạo dữ liệu giả lập (THỰC TẾ: BẠN CẦN GỌI API TẠI ĐÂY)
-        const hotels = [
-            { name: "Khách sạn View Biển Xanh", rating: 4.5, price: "1.200.000 VNĐ/đêm", description: "Gần trung tâm, hồ bơi vô cực." },
-            { name: "Resort Ngôi Sao", rating: 4.8, price: "2.850.000 VNĐ/đêm", description: "Khu nghỉ dưỡng cao cấp, bãi biển riêng." },
-            { name: "Homestay Ấm Cúng", rating: 4.2, price: "550.000 VNĐ/đêm", description: "Phòng đôi, không gian xanh mát." },
-            { name: "Khách sạn Giá Rẻ Tốt", rating: 3.9, price: "390.000 VNĐ/đêm", description: "Phù hợp cho du lịch tiết kiệm." },
-            { name: "Khách sạn Trung Tâm", rating: 4.3, price: "800.000 VNĐ/đêm", description: "Vị trí đắc địa, gần khu mua sắm." }
-        ];
-
-        // 3. Tạo HTML cho từng khách sạn
-        let hotelsHtml = '';
-        if (hotels.length > 0) {
-            hotels.forEach(hotel => {
-                // Giả lập màu ảnh nền khác nhau cho card
-                const randomColor = `hsl(${Math.random() * 360}, 50%, 90%)`; 
-                hotelsHtml += `
-                    <div class="hotel-card">
-                        <div class="hotel-card-image" style="background: ${randomColor};">Ảnh Khách Sạn</div>
-                        <div class="hotel-card-content">
-                            <h3>${hotel.name}</h3>
-                            <p>⭐ ${hotel.rating} sao | Nhận phòng: ${checkin.split('-').reverse().join('/')}</p>
-                            <p>${hotel.description}</p>
-                            <div class="hotel-card-price">${hotel.price}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            hotelsHtml = `<p style="text-align: center; font-style: italic;">Không tìm thấy khách sạn nào tại ${city}.</p>`;
-        }
-
-        // 4. Chèn HTML vào danh sách
-        hotelList.innerHTML = hotelsHtml;
-
-        // 5. Hiển thị khu vực kết quả
-        resultsContainer.style.display = 'block';
-
-        // 6. Cuộn xuống khu vực kết quả
-        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    hotelList.innerHTML = hotelsHtml;
+    resultsContainer.style.display = 'block';
+    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
 </body>
 </html>

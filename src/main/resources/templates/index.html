@@ -217,20 +217,24 @@
    <!-- Nút Prev -->
 	<button onclick="scrollPrev()" style="
     	position: absolute;
-    	left: 0px;
-    	top: 55%;
+    	left: 500px;
+    	top: 60%;
     	transform: translateY(-50%);
-    	background-color: white;
+    	background-color: rgba(255,255,255,0.95);
     	color: #333;
     	border: 1px solid #ccc;
     	border-radius: 50%;
-    	width: 40px;
-    	height: 40px;
+    	width: 38px;
+    	height: 38px;
     	cursor: pointer;
     	font-size: 20px;
     	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     	z-index: 10;
-	">‹</button>
+    	transition: 0.3s;
+	"
+	onmouseover="this.style.backgroundColor='rgba(0,123,255,0.9)'; this.style.color='white';"
+	onmouseout="this.style.backgroundColor='rgba(255,255,255,0.95)'; this.style.color='#333';"
+	>‹</button>
 
     <!-- Container -->
     <div id="destination-container" style="
@@ -240,7 +244,7 @@
         margin: 0 auto;
         overflow: hidden;
         scroll-behavior: smooth;
-        padding: 0 50px;
+        padding: 0 70px;
     ">
 
         <!-- Hồ Chí Minh -->
@@ -330,39 +334,74 @@
             <p style="font-weight: bold; margin: 10px 0 5px;">Phú Quốc</p>
             <p style="color: gray;">2,348 chỗ ở</p>
         </div>
+        
+          <!-- Cần Thơ -->
+        <div class="destination" onclick="goToBooking('CanTho')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/CanTho.jpg}" alt="Cần Thơ"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Cần Thơ</p>
+            <p style="color: gray;">5,851 chỗ ở</p>
+        </div>
+        
+          <!-- Vũng Tàu -->
+        <div class="destination" onclick="goToBooking('VungTau')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/VungTau.jpg}" alt="Vũng Tàu"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Vũng Tàu</p>
+            <p style="color: gray;">6,750 chỗ ở</p>
+        </div>
+        
+          <!-- Đồng Nai -->
+        <div class="destination" onclick="goToBooking('DongNai')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/DongNai.jpg}" alt="Đồng Nai"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Đồng Nai</p>
+            <p style="color: gray;">3,471 chỗ ở</p>
+        </div>
+        
+          <!-- Sapa -->
+        <div class="destination" onclick="goToBooking('Sapa')" style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+            <img th:src="@{/images/Sapa.jpg}" alt="Sapa"
+                 style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <p style="font-weight: bold; margin: 10px 0 5px;">Sapa</p>
+            <p style="color: gray;">5,481 chỗ ở</p>
+        </div>
 
     </div>
 
     <!-- Nút Next -->
 	<button onclick="scrollNext()" style="
     	position: absolute;
-    	right: 15px;
-    	top: 55%;
+    	right: 500px;
+    	top: 60%;
     	transform: translateY(-50%);
-    	background-color: white;
+    	background-color: rgba(255,255,255,0.95);
     	color: #333;
    	 	border: 1px solid #ccc;
    	 	border-radius: 50%;
-    	width: 40px;
-    	height: 40px;
+    	width: 38px;
+    	height: 38px;
     	cursor: pointer;
     	font-size: 20px;
     	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     	z-index: 10;
-	">›</button>
+    	transition: 0.3s;
+	"
+	onmouseover="this.style.backgroundColor='rgba(0,123,255,0.9)'; this.style.color='white';"
+	onmouseout="this.style.backgroundColor='rgba(255,255,255,0.95)'; this.style.color='#333';"
+	>›</button>
 </div>
 
 <script>
 	// Hàm điều hướng đến trang đặt chỗ
 	function goToBooking(place) {
-    window.location.href = '/booking?place=' + place;
-}
+    	window.location.href = '/booking?place=' + place;
+	}
 
 	const container = document.getElementById("destination-container");
 
 	// --- Hàm Next ---
 	function scrollNext() {
-    	// Nếu đã cuộn tới cuối => quay lại đầu
     	if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
         	container.scrollTo({ left: 0, behavior: 'smooth' });
     	} else {
@@ -372,7 +411,6 @@
 
 	// --- Hàm Prev ---
 	function scrollPrev() {
-    	// Nếu đang ở đầu => nhảy đến cuối
    		if (container.scrollLeft <= 0) {
         	container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
     	} else {
@@ -380,7 +418,7 @@
     	}
 	}
 
-	// --- Tự động cuộn điểm đến ---
+	// --- Auto scroll ---
 	let autoScrollInterval;
 
 	function startAutoScroll() {
@@ -390,16 +428,11 @@
         	} else {
             	container.scrollBy({ left: 250, behavior: 'smooth' });
         	}
-    	}, 3000); // tự chuyển mỗi 3 giây
-}
+    	}, 3000);
+	}
 
-	// Bắt đầu auto-scroll khi tải trang
 	window.addEventListener("load", startAutoScroll);
-
-	// Dừng khi rê chuột vào
 	container.addEventListener("mouseenter", () => clearInterval(autoScrollInterval));
-
-	// Tiếp tục khi rê chuột ra
 	container.addEventListener("mouseleave", startAutoScroll);
 </script>
     
