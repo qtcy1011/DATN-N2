@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Chi tiết Khách sạn: ' + ${hotel.tenKhachSan}"></title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .back-btn { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007bff; font-weight: 600; }
+        .hotel-image { width: 100%; height: 450px; object-fit: cover; border-radius: 10px; margin-bottom: 25px; }
+        h1 { color: #0056b3; font-size: 2.2em; margin-bottom: 5px; }
+        .meta-info p { margin: 5px 0; font-size: 1.1em; }
+        .meta-info strong { color: #d9534f; }
+        .description { margin-top: 20px; padding: 15px; background: #f1f1f1; border-radius: 8px; }
+        .price-box { font-size: 1.8em; font-weight: 700; color: #28a745; margin-top: 20px; text-align: right;}
+        .booking-button { width: 100%; padding: 15px; background-color: #ffc107; color: #333; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; margin-top: 20px; transition: background-color 0.3s; }
+        .booking-button:hover { background-color: #ffcd39; }
+    </style>
+</head>
+<body>
+    <div class="container" th:object="${hotel}">
+        
+        <a href="javascript:history.back()" class="back-btn">⬅ Quay lại trang tìm kiếm</a>
+        
+        <h1 th:text="*{tenKhachSan}">Tên Khách Sạn</h1>
+        
+        <div class="meta-info">
+            <p>⭐ Tiêu chuẩn: <strong th:text="*{tieuChuanSao} + ' Sao'">5 Sao</strong> | 
+               Đánh giá: <strong th:text="*{rating}">4.9</strong>/5</p>
+            <p>📍 Địa chỉ: <span th:text="*{diaChi} + ', ' + *{thanhPho} + ', ' + *{quocGia}">Địa chỉ chi tiết</span></p>
+        </div>
+
+        
+        <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
+             th:alt="*{tenKhachSan}" 
+             class="hotel-image">
+
+        <h2>📝 Mô tả & Tiện ích</h2>
+        <div class="description">
+            <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
+        </div>
+
+       
+        
+        <button class="booking-button">ĐẶT PHÒNG NGAY</button>
+        
+    </div>
+</body>
+</html>

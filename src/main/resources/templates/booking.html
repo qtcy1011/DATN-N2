@@ -2,7 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đặt Khách Sạn</title>
+    <title>Đặt Khách Sạn & Nơi Ở</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -31,7 +31,8 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            background-image: url('https://picsum.photos/1600/900?city');
+            /* Giữ nguyên hoặc sử dụng ảnh đại diện (giả định) */
+            background-image: url('https://picsum.photos/1600/900?city'); 
         }
 
         .overlay {
@@ -185,6 +186,13 @@
             gap: 20px;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
+        
+        /* Cải tiến hiển thị Hotel Card */
+        .hotel-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
 
         .hotel-card {
             background-color: white;
@@ -210,6 +218,15 @@
             justify-content: center;
             font-weight: 500;
             color: #777;
+            /* Thêm CSS để hiển thị ảnh từ URL nếu có */
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hotel-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .hotel-card-content {
@@ -235,6 +252,16 @@
             color: #d9534f;
             margin-top: 10px;
         }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #E74C3C;
+            font-weight: 600;
+            border: 1px solid #FADBD8;
+            border-radius: 8px;
+            background-color: #F8F8F8;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -256,7 +283,6 @@
 <body th:style="'background-image: url(/images/' + ${place} + '.jpg)'">
 <div class="overlay"></div>
 
-<!-- 🔙 Nút quay lại ở ngoài cùng -->
 <a href="javascript:history.back()" class="back-btn">⬅ Quay lại</a>
 
 <div class="booking-container">
@@ -294,6 +320,32 @@
 </div>
 
 <script th:inline="javascript">
+// 🟦 DỮ LIỆU KHÁCH SẠN ĐƯỢC CHUYỂN TỪ SQL SANG JS
+
+const ALL_HOTELS = [
+    { MaKhachSan: 1, TenKhachSan: "Khách sạn Vinpearl Luxury", DiaChi: "Trường Sa", ThanhPho: "Đà Nẵng", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng sang trọng bậc nhất.", Rating: 4.8, UrlHinhAnhDaiDien: 'img_1.jpg', GiaMoiDem: "1.200.000 VNĐ" },
+    { MaKhachSan: 2, TenKhachSan: "Khách sạn Mường Thanh", DiaChi: "Lê Lợi", ThanhPho: "Hà Nội", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn trung tâm thành phố.", Rating: 4.2, UrlHinhAnhDaiDien: 'img_2.jpg', GiaMoiDem: "850.000 VNĐ" },
+    { MaKhachSan: 3, TenKhachSan: "Khách sạn Ibis Budget", DiaChi: "Nam Kỳ Khởi Nghĩa", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 3, MoTa: "Khách sạn tiện nghi, giá rẻ.", Rating: 3.9, UrlHinhAnhDaiDien: 'img_3.jpg', GiaMoiDem: "450.000 VNĐ" },
+    { MaKhachSan: 4, TenKhachSan: "InterContinental Nha Trang", DiaChi: "Trần Phú", ThanhPho: "Nha Trang", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "View biển tuyệt đẹp.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_4.jpg', GiaMoiDem: "2.500.000 VNĐ" },
+    { MaKhachSan: 5, TenKhachSan: "Fusion Suites Vũng Tàu", DiaChi: "Bãi Sau", ThanhPho: "Vũng Tàu", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Thiết kế hiện đại, có bếp nhỏ.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_5.jpg', GiaMoiDem: "1.800.000 VNĐ" },
+    { MaKhachSan: 6, TenKhachSan: "Khách sạn La Sinfonía del Rey", DiaChi: "Hàng Dầu", ThanhPho: "Hà Nội", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Phong cách cổ điển, gần Hồ Gươm.", Rating: 4.6, UrlHinhAnhDaiDien: 'img_6.jpg', GiaMoiDem: "1.500.000 VNĐ" },
+    { MaKhachSan: 7, TenKhachSan: "The Myst Đồng Khởi", DiaChi: "Đồng Khởi", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Kiến trúc độc đáo, hoài cổ.", Rating: 4.7, UrlHinhAnhDaiDien: 'img_7.jpg', GiaMoiDem: "3.200.000 VNĐ" },
+    { MaKhachSan: 8, TenKhachSan: "Salinda Resort Phú Quốc", DiaChi: "Dương Tơ", ThanhPho: "Phú Quốc", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Bãi biển riêng, yên tĩnh.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_8.jpg', GiaMoiDem: "4.100.000 VNĐ" },
+    { MaKhachSan: 9, TenKhachSan: "Khách sạn Novotel Saigon", DiaChi: "Lê Thánh Tôn", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Thương hiệu quốc tế, tiện nghi.", Rating: 4.3, UrlHinhAnhDaiDien: 'img_9.jpg', GiaMoiDem: "1.050.000 VNĐ" },
+    { MaKhachSan: 10, TenKhachSan: "Hội An Silk Marina Resort", DiaChi: "Nguyễn Phan Vinh", ThanhPho: "Hội An", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Kiến trúc Hội An truyền thống.", Rating: 4.4, UrlHinhAnhDaiDien: 'img_10.jpg', GiaMoiDem: "950.000 VNĐ" },
+    { MaKhachSan: 11, TenKhachSan: "Khách sạn Sapa Jade Hill Resort", DiaChi: "Lao Chải", ThanhPho: "Sapa", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Resort vùng núi với view thung lũng tuyệt đẹp.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_11.jpg', GiaMoiDem: "2.100.000 VNĐ" },
+    { MaKhachSan: 12, TenKhachSan: "Khách sạn Mường Thanh Luxury Hạ Long", DiaChi: "Hòn Gai", ThanhPho: "Hạ Long", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khách sạn cao cấp, gần Vịnh Hạ Long.", Rating: 4.3, UrlHinhAnhDaiDien: 'img_12.jpg', GiaMoiDem: "1.950.000 VNĐ" },
+    { MaKhachSan: 13, TenKhachSan: "Khách sạn Mercure Đà Lạt Resort", DiaChi: "Hồ Tuyền Lâm", ThanhPho: "Đà Lạt", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Phong cách nghỉ dưỡng lãng mạn, yên tĩnh.", Rating: 4.4, UrlHinhAnhDaiDien: 'img_13.jpg', GiaMoiDem: "1.600.000 VNĐ" },
+    { MaKhachSan: 14, TenKhachSan: "Khách sạn Azerai Cần Thơ", DiaChi: "Cồn Cái Khế", ThanhPho: "Cần Thơ", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng biệt lập trên cồn, sang trọng.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_14.jpg', GiaMoiDem: "3.800.000 VNĐ" },
+    { MaKhachSan: 15, TenKhachSan: "Khách sạn Banyan Tree Lăng Cô", DiaChi: "Lăng Cô", ThanhPho: "Huế", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Villa có hồ bơi riêng, view biển đẹp nhất miền Trung.", Rating: 4.8, UrlHinhAnhDaiDien: 'img_15.jpg', GiaMoiDem: "5.500.000 VNĐ" },
+    { MaKhachSan: 16, TenKhachSan: "Khách sạn TTC Phan Thiết", DiaChi: "Nguyễn Đình Chiểu", ThanhPho: "Phan Thiết", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn bên bờ biển Mũi Né.", Rating: 4.1, UrlHinhAnhDaiDien: 'img_16.jpg', GiaMoiDem: "980.000 VNĐ" },
+    { MaKhachSan: 17, TenKhachSan: "Khách sạn FLC Grand Quy Nhơn", DiaChi: "Eo Gió", ThanhPho: "Quy Nhơn", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng lớn, thiết kế độc đáo.", Rating: 4.6, UrlHinhAnhDaiDien: 'img_17.jpg', GiaMoiDem: "2.800.000 VNĐ" },
+    { MaKhachSan: 18, TenKhachSan: "Khách sạn Four Points by Sheraton Đà Nẵng", DiaChi: "Võ Nguyên Giáp", ThanhPho: "Đà Nẵng", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn mặt biển, hồ bơi vô cực.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_18.jpg', GiaMoiDem: "1.450.000 VNĐ" },
+    { MaKhachSan: 19, TenKhachSan: "Khách sạn Vũng Tàu Intourco Resort", DiaChi: "Thùy Vân", ThanhPho: "Vũng Tàu", QuocGia: "Việt Nam", TieuChuanSao: 3, MoTa: "Resort bình dân, có bãi biển riêng.", Rating: 3.8, UrlHinhAnhDaiDien: 'img_19.jpg', GiaMoiDem: "890.000 VNĐ" },
+    { MaKhachSan: 20, TenKhachSan: "Khách sạn Mai House Sài Gòn", DiaChi: "Ngô Thời Nhiệm", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khách sạn boutique sang trọng, phong cách Đông Dương.", Rating: 4.7, UrlHinhAnhDaiDien: 'img_20.jpg', GiaMoiDem: "3.300.000 VNĐ" }
+
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -310,43 +362,34 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('checkin').value = formatDate(today);
     document.getElementById('checkout').value = formatDate(tomorrow);
 
-    // 🟦 Lấy 'place' từ URL (VD: ?place=Sapa)
+    // Xử lý giá trị mặc định cho ô địa điểm
     const urlParams = new URLSearchParams(window.location.search);
     const urlPlace = urlParams.get('place');
-
-    // 🟨 Nếu có place trong URL → dùng nó, nếu không thì dùng giá trị từ Thymeleaf
     const defaultPlace = "Hồ Chí Minh";
-    const rawPlaceName = urlPlace || /*[[${selectedPlace}]]*/ defaultPlace;
+    
+    // Lấy tên địa điểm mặc định từ Thymeleaf hoặc URL
+    const rawPlaceName = urlPlace || /*[[${selectedPlace}]]*/ defaultPlace; 
 
-    // 🟩 Map tên vùng cho đẹp (nếu là tên không dấu hoặc viết liền)
     const placesMap = {
-        HoChiMinh: "Hồ Chí Minh",
-        HaNoi: "Hà Nội",
-        DaNang: "Đà Nẵng",
-        NhaTrang: "Nha Trang",
-        DaLat: "Đà Lạt",
-        Hue: "Huế",
-        HaLong: "Hạ Long",
-        HoiAn: "Hội An",
-        PhanThiet: "Phan Thiết",
-        QuyNhon: "Quy Nhơn",
-        PhuQuoc: "Phú Quốc",
-        CanTho: "Cần Thơ",
-        VungTau: "Vũng Tàu",
-        DongNai: "Đồng Nai",
-        Sapa: "Sapa"
+        HoChiMinh: "TP.HCM", HaNoi: "Hà Nội", DaNang: "Đà Nẵng", NhaTrang: "Nha Trang", 
+        DaLat: "Đà Lạt", Hue: "Huế", HaLong: "Hạ Long", HoiAn: "Hội An", PhanThiet: "Phan Thiết", 
+        QuyNhon: "Quy Nhơn", PhuQuoc: "Phú Quốc", CanTho: "Cần Thơ", VungTau: "Vũng Tàu",  Sapa: "Sapa"
     };
 
-    // 🟦 Nếu có trong map thì dùng tên chuẩn, nếu không thì giữ nguyên
-    const formattedPlaceName = placesMap[rawPlaceName] || rawPlaceName || defaultPlace;
+    // 🟦 Chuẩn hóa tên (TP.HCM, Hà Nội, Đà Nẵng, v.v.)
+    const formattedPlaceName = placesMap[rawPlaceName] || rawPlaceName;
 
     // 🟩 Gán vào giao diện
     document.getElementById("location").value = formattedPlaceName;
-    document.getElementById("display-place").textContent = formattedPlaceName;
+	document.getElementById("display-place").textContent = formattedPlaceName;
+    
+   
 });
 
+
 function searchHotels() {
-    const city = document.getElementById("location").value;
+    const rawCity = document.getElementById("location").value.trim();
+    const city = rawCity.toUpperCase(); // Chuẩn hóa để so sánh
     const checkin = document.getElementById("checkin").value;
     const checkout = document.getElementById("checkout").value;
     const guests = document.getElementById("guests").value;
@@ -361,30 +404,54 @@ function searchHotels() {
         return;
     }
 
-    resultsHeading.textContent = `Các Khách Sạn Tốt Nhất tại ${city} (${guests})`;
+    // 🚨 LỌC DỮ LIỆU DỰA TRÊN ThanhPho CỦA SQL
 
-    const hotels = [
-        { name: "Khách sạn View Biển Xanh", rating: 4.5, price: "1.200.000 VNĐ/đêm", description: "Gần trung tâm, hồ bơi vô cực." },
-        { name: "Resort Ngôi Sao", rating: 4.8, price: "2.850.000 VNĐ/đêm", description: "Khu nghỉ dưỡng cao cấp, bãi biển riêng." },
-        { name: "Homestay Ấm Cúng", rating: 4.2, price: "550.000 VNĐ/đêm", description: "Phòng đôi, không gian xanh mát." },
-        { name: "Khách sạn Giá Rẻ Tốt", rating: 3.9, price: "390.000 VNĐ/đêm", description: "Phù hợp cho du lịch tiết kiệm." },
-        { name: "Khách sạn Trung Tâm", rating: 4.3, price: "800.000 VNĐ/đêm", description: "Vị trí đắc địa, gần khu mua sắm." }
-    ];
+	function removeVietnameseTones(str) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/Đ/g, "D")
+        .replace(/đ/g, "d")
+        .toUpperCase();
+}
+
+	const filteredHotels = ALL_HOTELS.filter(hotel => {
+   	 	const cityName = removeVietnameseTones(hotel.ThanhPho);
+   		const searchCity = removeVietnameseTones(city);
+   	 	return cityName.includes(searchCity);
+});		
+    
+    resultsHeading.textContent = `Tìm thấy ${filteredHotels.length} Khách Sạn tại ${rawCity} (${guests})`;
 
     let hotelsHtml = '';
-    hotels.forEach(hotel => {
-        const randomColor = `hsl(${Math.random() * 360}, 50%, 90%)`; 
-        hotelsHtml += `
-            <div class="hotel-card">
-                <div class="hotel-card-image" style="background: ${randomColor};">Ảnh Khách Sạn</div>
-                <div class="hotel-card-content">
-                    <h3>${hotel.name}</h3>
-                    <p>⭐ ${hotel.rating} sao | Nhận phòng: ${checkin.split('-').reverse().join('/')}</p>
-                    <p>${hotel.description}</p>
-                    <div class="hotel-card-price">${hotel.price}</div>
-                </div>
-            </div>`;
-    });
+    
+    if (filteredHotels.length === 0) {
+        hotelsHtml = `
+            <div class="no-results">
+                Không tìm thấy khách sạn nào tại ${rawCity} khớp với tiêu chí tìm kiếm của bạn.
+            </div>
+        `;
+    } else {
+        filteredHotels.forEach(hotel => {
+            // Giả định URL hình ảnh là tĩnh và tương đối
+            const imageUrl = `/images/${hotel.UrlHinhAnhDaiDien}`;
+            
+            // THAY ĐỔI: Sử dụng dữ liệu THỰC TẾ từ mảng ALL_HOTELS
+            hotelsHtml += `
+                <a href="/hotel-detail?id=${hotel.MaKhachSan}" class="hotel-card-link">
+                    <div class="hotel-card">
+                        <div class="hotel-card-image" style="background-image: url('${imageUrl}');">
+                            </div>
+                        <div class="hotel-card-content">
+                            <h3>${hotel.TenKhachSan} <small>(${hotel.TieuChuanSao}⭐)</small></h3>
+                            <p><strong>Địa chỉ:</strong> ${hotel.DiaChi}, ${hotel.ThanhPho}</p>
+                            <p>⭐ Đánh giá: <strong>${hotel.Rating}</strong>/5 | ${hotel.MoTa}</p>
+                            <div class="hotel-card-price">Từ: ${hotel.GiaMoiDem}/đêm</div>
+                        </div>
+                    </div>
+                </a>`;
+        });
+    }
 
     hotelList.innerHTML = hotelsHtml;
     resultsContainer.style.display = 'block';

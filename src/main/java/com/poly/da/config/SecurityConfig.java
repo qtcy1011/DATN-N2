@@ -90,7 +90,7 @@ public class SecurityConfig {
             .authenticationProvider(khachHangAuthProvider()) 
             .authorizeHttpRequests(auth -> auth
             		.requestMatchers("/admin/login").permitAll()
-                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/api/**", "/force-change-password", "/update-password").permitAll() 
+                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/api/**", "/force-change-password", "/update-password", "/booking", "/booking/**", "/hotel-detail", "/hotel-detail/**").permitAll() 
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

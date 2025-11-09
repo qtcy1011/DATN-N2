@@ -83,4 +83,20 @@ public class KhachSan {
     }
     
     // (Bổ sung getters/setters cho QuocGia, MoTa...)
+    public String getQuocGia() {
+        return quocGia;
+    }
+
+    public void setQuocGia(String quocGia) {
+        this.quocGia = quocGia;
+    }
+
+    // Getter và Setter cho moTa
+    public String getMoTa() {
+        return moTa;
+    }
+
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
 }
