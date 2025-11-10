@@ -30,7 +30,6 @@
             <p>📍 Địa chỉ: <span th:text="*{diaChi} + ', ' + *{thanhPho} + ', ' + *{quocGia}">Địa chỉ chi tiết</span></p>
         </div>
 
-        
         <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
              th:alt="*{tenKhachSan}" 
              class="hotel-image">
@@ -40,10 +39,14 @@
             <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
         </div>
 
-       
-        
-        <button class="booking-button">ĐẶT PHÒNG NGAY</button>
-        
+        <!-- Nút đặt phòng -->
+        <button class="booking-button" onclick="datPhong()">ĐẶT PHÒNG NGAY</button>
     </div>
+
+    <script>
+        function datPhong() {
+            alert("✅ Bạn đã đặt phòng thành công! Cảm ơn bạn đã chọn khách sạn của chúng tôi ❤️");
+        }
+    </script>
 </body>
 </html>
