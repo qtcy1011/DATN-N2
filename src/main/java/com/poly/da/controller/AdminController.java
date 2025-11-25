@@ -86,6 +86,12 @@ public class AdminController {
         return "admin/manage_customers";
     }
 
+    @GetMapping("/add_customer")
+    public String addCustomerForm(Model model) {
+        model.addAttribute("customer", new KhachHang());
+        return "admin/add_customer";
+    }
+
 
     @GetMapping("/delete_customer/{id}")
     public String deleteCustomer(@PathVariable("id") int id) {
