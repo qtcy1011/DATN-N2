@@ -109,18 +109,26 @@
                               (kh.trangThaiTaiKhoan == 'Khóa' ? 'text-danger fw-bold' : 'text-secondary')}">
                 </td>
                 <td>
-                    <!-- ✅ Sửa lại đường dẫn cho khớp controller -->
-                    <a th:href="@{'/admin/edit_customer/' + ${kh.maKhachHang}}"
-                       class="btn btn-warning btn-sm">
-                        <i class="bi bi-pencil-square"></i> Sửa
-                    </a>
+    <!-- Sửa khách hàng -->
+    <a th:href="@{'/admin/edit_customer/' + ${kh.maKhachHang}}"
+       class="btn btn-warning btn-sm">
+        <i class="bi bi-pencil-square"></i> Sửa
+    </a>
 
-                    <a th:href="@{'/admin/delete_customer/' + ${kh.maKhachHang}}"
-                       onclick="return confirm('Bạn có chắc muốn xóa khách hàng này không?');"
-                       class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash3"></i> Xóa
-                    </a>
-                </td>
+    <!-- Xóa khách hàng -->
+    <a th:href="@{'/admin/delete_customer/' + ${kh.maKhachHang}}"
+       onclick="return confirm('Bạn có chắc muốn xóa khách hàng này không?');"
+       class="btn btn-danger btn-sm">
+        <i class="bi bi-trash3"></i> Xóa
+    </a>
+
+    <!-- Xem đơn đặt phòng của khách -->
+    <a th:href="@{'/admin/manage_bookings'(keyword=${kh.maKhachHang})}"
+       class="btn btn-info btn-sm">
+        <i class="bi bi-eye"></i> Xem đơn
+    </a>
+</td>
+
             </tr>
         </tbody>
     </table>
