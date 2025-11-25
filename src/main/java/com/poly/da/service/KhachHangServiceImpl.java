@@ -19,6 +19,11 @@ public class KhachHangServiceImpl implements IKhachHangService {
     }
 
     @Override
+    public List<KhachHang> search(String keyword) {
+        return khachHangDao.search(keyword);
+    }
+
+    @Override
     public boolean register(KhachHang kh) {
 
         if (khachHangDao.findByEmail(kh.getEmail()) != null) {

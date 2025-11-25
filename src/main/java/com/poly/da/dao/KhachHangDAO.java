@@ -1,6 +1,9 @@
 package com.poly.da.dao;
 
 import com.poly.da.entity.KhachHang;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
@@ -10,6 +13,8 @@ import java.util.List;
 @Repository 
 public class KhachHangDAO {
 
+    @Autowired
+    private JdbcTemplate jdbc;
    
     private final DataSource dataSource;
 
@@ -151,4 +156,15 @@ public class KhachHangDAO {
         }
         return list;
     }
+
+    public List<KhachHang> search(String keyword) {
+        String sql = "SELECT * FROM KHACHHANG " +
+                     "WHERE hoTen LIKE ? OR email LIKE ? OR sdt LIKE ?";
+
+        String kw = "%" + keyword + "%";
+
+        return jdbc.query(sql, new KhachHangRowMapper(), kw, kw, kw);
+    }
+
+
 }

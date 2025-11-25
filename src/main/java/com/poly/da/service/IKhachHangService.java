@@ -19,4 +19,6 @@ public interface IKhachHangService {
 
    
     List<KhachHang> findAll();
+    List<KhachHang> search(String keyword);
+
 }

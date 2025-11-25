@@ -68,11 +68,24 @@ public class AdminController {
     // --------------------- KHÁCH HÀNG ---------------------
 
     @GetMapping("/manage_customers")
-    public String manageCustomers(Model model) {
-        List<KhachHang> khachHangList = khachHangService.findAll();
+    public String manageCustomers(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
+
+        List<KhachHang> khachHangList;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            khachHangList = khachHangService.search(keyword.trim());
+        } else {
+            khachHangList = khachHangService.findAll();
+        }
+
         model.addAttribute("khachHangList", khachHangList);
+        model.addAttribute("keyword", keyword);
+
         return "admin/manage_customers";
     }
+
 
     @GetMapping("/delete_customer/{id}")
     public String deleteCustomer(@PathVariable("id") int id) {

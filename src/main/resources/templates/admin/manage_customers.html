@@ -66,6 +66,13 @@
     <a href="/admin/index" class="btn btn-secondary mb-3">⬅ Quay lại</a>
 
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <form method="get" action="/admin/manage_customers" class="d-flex mb-3" style="max-width: 350px;">
+    <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Tìm theo họ tên, email, SĐT">
+    <button class="btn btn-primary ms-2" type="submit">
+        <i class="bi bi-search"></i>
+    </button>
+</form>
+    
 
     <table class="table table-bordered table-hover text-center align-middle">
         <thead class="table-dark">
