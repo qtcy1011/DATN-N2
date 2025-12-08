@@ -1,11 +1,11 @@
 package com.poly.da.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.poly.da.entity.KhachSan;
+import java.util.List; // Import List
 
 public interface KhachSanRepository extends JpaRepository<KhachSan, Integer> {
-	List<KhachSan> findByThanhPhoContainingIgnoreCase(String thanhPho);
+
+    // Thêm phương thức tìm kiếm này vào Repository
+    List<KhachSan> findByThanhPhoContainingIgnoreCase(String thanhPho);
 }

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Chi tiết Khách sạn: ' + ${hotel.tenKhachSan}"></title>
+    <style>
+        /* CSS CŨ */
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .back-btn { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007bff; font-weight: 600; }
+        .hotel-image { width: 100%; height: 450px; object-fit: cover; border-radius: 10px; margin-bottom: 25px; }
+        h1 { color: #0056b3; font-size: 2.2em; margin-bottom: 5px; }
+        .meta-info p { margin: 5px 0; font-size: 1.1em; }
+        .meta-info strong { color: #d9534f; }
+        .description { margin-top: 20px; padding: 15px; background: #f1f1f1; border-radius: 8px; }
+        .price-box { font-size: 1.8em; font-weight: 700; color: #28a745; margin-top: 20px; text-align: right;}
+        .booking-button { width: 100%; padding: 15px; background-color: #ffc107; color: #333; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; margin-top: 20px; transition: background-color 0.3s; }
+        .booking-button:hover { background-color: #ffcd39; }
+
+        /* CSS MỚI CHO MODAL ĐẶT PHÒNG */
+        .modal {
+            display: none; /* Ẩn theo mặc định */
+            position: fixed; /* Giữ cố định trên màn hình */
+            z-index: 1; /* Nằm trên các nội dung khác */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Cho phép cuộn nếu nội dung quá dài */
+            background-color: rgba(0,0,0,0.4); /* Nền mờ */
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 5% từ trên xuống và căn giữa */
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%; /* Chiều rộng */
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+
+        /* Hiệu ứng trượt xuống */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Quan trọng để padding không làm tăng chiều rộng */
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" th:object="${hotel}">
+        
+        <a href="javascript:history.back()" class="back-btn">⬅ Quay lại trang tìm kiếm</a>
+        
+        <h1 th:text="*{tenKhachSan}">Tên Khách Sạn</h1>
+        
+        <div class="meta-info">
+            <p>⭐ Tiêu chuẩn: <strong th:text="*{tieuChuanSao} + ' Sao'">5 Sao</strong> | 
+               Đánh giá: <strong th:text="*{rating}">4.9</strong>/5</p>
+            <p>📍 Địa chỉ: <span th:text="*{diaChi} + ', ' + *{thanhPho} + ', ' + *{quocGia}">Địa chỉ chi tiết</span></p>
+        </div>
+
+        <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
+             th:alt="*{tenKhachSan}" 
+             class="hotel-image">
+
+        <h2>📝 Mô tả & Tiện ích</h2>
+        <div class="description">
+            <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
+        </div>
+
+        <button class="booking-button" onclick="openBookingModal()">ĐẶT PHÒNG NGAY</button>
+    </div>
+
+    <div id="bookingModal" class="modal">
+
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2>Thông tin Đặt Phòng</h2>
+            
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+                <div class="form-group">
+                    <label for="fullName">Họ và Tên:</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkIn">Ngày nhận phòng:</label>
+                    <input type="date" id="checkIn" name="checkIn" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkOut">Ngày trả phòng:</label>
+                    <input type="date" id="checkOut" name="checkOut" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="numGuests">Số lượng khách:</label>
+                    <input type="number" id="numGuests" name="numGuests" min="1" value="1" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Xác nhận Đặt Phòng</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Lấy modal
+        var modal = document.getElementById("bookingModal");
+
+        // Hàm mở modal
+        function openBookingModal() {
+            modal.style.display = "block";
+        }
+
+        // Hàm đóng modal
+        function closeBookingModal() {
+            modal.style.display = "none";
+        }
+
+        // Hàm xử lý khi submit form
+        function submitBooking(event) {
+            event.preventDefault(); // Ngăn chặn form submit thực sự (tải lại trang)
+
+            // Ở đây, bạn sẽ thực hiện logic gửi dữ liệu đặt phòng lên server
+            // Ví dụ: sử dụng fetch/axios để gửi dữ liệu từ form (event.target)
+
+            // Sau khi xử lý thành công (giả lập):
+            alert("ĐẶT PHÒNG THÀNH CÔNG! \nCảm ơn bạn đã chọn khách sạn của chúng tôi. Chúng tôi sẽ gửi xác nhận chi tiết qua email.");
+            
+            closeBookingModal(); // Đóng modal
+            document.getElementById("bookingForm").reset(); // Reset form
+            
+            // Lưu ý: Trong một ứng dụng thực tế, bạn cần gửi dữ liệu này lên server.
+        }
+
+        // Đóng modal khi click ra ngoài
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeBookingModal();
+            }
+        }
+    </script>
+</body>
+</html>

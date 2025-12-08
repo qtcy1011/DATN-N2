@@ -171,8 +171,8 @@ body {
 	<div class="header">
 		<a th:href="@{/}" class="logo">StayEZ</a>
 		<div class="nav-links">
-			<a th:href="@{/search}"><i class="fas fa-search"></i> Tìm Khách
-				Sạn</a> <span sec:authorize="!isAuthenticated()"> <a
+			
+				<span sec:authorize="!isAuthenticated()"> <a
 				th:href="@{/register}">Đăng Ký</a> <a th:href="@{/login}"
 				class="login-btn">Đăng Nhập</a>
 			</span> <span sec:authorize="isAuthenticated()">

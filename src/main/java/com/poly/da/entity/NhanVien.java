@@ -1,32 +1,62 @@
 package com.poly.da.entity;
 
-import java.util.Date;
-
 import jakarta.persistence.*;
 
-@Entity // BẮT BUỘC
+import java.sql.Timestamp;
+import java.time.LocalDate; // Sử dụng LocalDate cho kiểu DATE trong SQL
+
+@Entity 
 @Table(name = "NHANVIEN")
 public class NhanVien {
-	@Id
-    private int maNhanVien;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Dùng cho cột tự tăng (IDENTITY)
+    @Column(name = "MaNhanVien")
+    private Integer maNhanVien; // Dùng Integer cho ID
+
+    @Column(name = "HoTen")
     private String hoTen;
+    
+    @Column(name = "Email", unique = true)
     private String email;
+    
+    @Column(name = "SDT", unique = true)
     private String sdt;
+    
+    @Column(name = "MatKhauHash")
     private String matKhauHash;
+    
+    @Column(name = "VaiTro")
     private String vaiTro; 
-    private Date ngayTao;
+    
+    @Column(name = "NgayTao")
+    private Timestamp ngayTao; // Đổi sang LocalDate để khớp với DATE trong SQL
+    
+    @Column(name = "TrangThai")
     private String trangThai;
 
     public NhanVien() {
     }
+    
+    // --- Constructor đầy đủ (Tùy chọn) ---
+    public NhanVien(String hoTen, String email, String sdt, String matKhauHash, String vaiTro, 
+                    Timestamp ngayTao, String trangThai) {
+        this.hoTen = hoTen;
+        this.email = email;
+        this.sdt = sdt;
+        this.matKhauHash = matKhauHash;
+        this.vaiTro = vaiTro;
+        this.ngayTao = ngayTao;
+        this.trangThai = trangThai;
+    }
 
-    // --- Getters và Setters ---
+    // --- Getters và Setters đã cập nhật kiểu dữ liệu ---
 
-    public int getMaNhanVien() {
+    public Integer getMaNhanVien() {
         return maNhanVien;
     }
 
-    public void setMaNhanVien(int maNhanVien) {
+    public void setMaNhanVien(Integer maNhanVien) {
         this.maNhanVien = maNhanVien;
     }
 
@@ -70,12 +100,12 @@ public class NhanVien {
         this.vaiTro = vaiTro;
     }
 
-    public Date getNgayTao() {
+    public Timestamp getNgayTao() { // Đã đổi kiểu trả về
         return ngayTao;
     }
 
-    public void setNgayTao(Date ngayTao) {
-        this.ngayTao = ngayTao;
+    public void setNgayTao(Timestamp timestamp) { // Đã đổi kiểu tham số
+        this.ngayTao = timestamp;
     }
 
     public String getTrangThai() {

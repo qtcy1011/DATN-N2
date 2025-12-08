@@ -21,8 +21,12 @@ public class DonDatPhongController {
     public String manageOrders(@RequestParam(value = "keyword", required = false) String keyword,
                                Model model) {
         List<DonDatPhong> donDatPhongList;
+        
+        // Kiểm tra nếu có từ khóa tìm kiếm
         if (keyword != null && !keyword.isEmpty()) {
-            donDatPhongList = donDatPhongRepo.findByMaDonDatPhongContainingOrMaKhachHangContaining(keyword, keyword);
+            // Thay thế phương thức bị lỗi bằng phương thức @Query đã sửa
+            // (Đã sửa trong DonDatPhongRepository.java ở bước trước)
+            donDatPhongList = donDatPhongRepo.searchDonDatPhongByKeyword(keyword); 
         } else {
             donDatPhongList = donDatPhongRepo.findAll();
         }

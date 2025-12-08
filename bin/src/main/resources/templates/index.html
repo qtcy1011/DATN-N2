@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Booking Khách sạn - StayEZ</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+/* CSS Reset và Typography cơ bản */
+body {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f0f2f5; /* Màu nền nhẹ */
+	color: #333;
+}
+
+.header {
+	background-color: white;
+	padding: 15px 50px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.logo {
+	color: #0087c0; /* Màu xanh đặc trưng */
+	font-size: 24px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.nav-links a {
+	margin-left: 20px;
+	text-decoration: none;
+	color: #555;
+	padding: 5px 10px;
+	border-radius: 4px;
+	transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+	background-color: #e0e0e0;
+}
+
+.login-btn {
+	background-color: #ff5b5b; /* Màu đỏ nổi bật */
+	color: white !important;
+	font-weight: bold;
+	padding: 8px 15px !important;
+	border-radius: 8px !important;
+}
+
+/* Phần tìm kiếm chính */
+.hero-section {
+	padding: 50px;
+	text-align: center;
+	background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+	/* Nền xanh gradient */
+	color: white;
+}
+
+.search-widget {
+	background-color: white;
+	border-radius: 12px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	padding: 25px;
+	max-width: 900px;
+	margin: 30px auto 0;
+	text-align: left;
+}
+
+.tab-menu {
+	display: flex;
+	margin-bottom: 20px;
+}
+
+.tab-menu button {
+	background-color: #e6f6ff;
+	color: #0087c0;
+	border: none;
+	padding: 10px 20px;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: bold;
+	border-radius: 8px 8px 0 0;
+	margin-right: 5px;
+}
+
+.tab-menu button.active {
+	background-color: white;
+	box-shadow: none;
+	border-bottom: 3px solid #0087c0;
+}
+
+.search-form-container form {
+	display: flex;
+	gap: 10px;
+	align-items: flex-end;
+}
+
+.input-group {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.input-group label {
+	color: #555;
+	font-size: 12px;
+	margin-bottom: 5px;
+	font-weight: 600;
+}
+
+.input-field {
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 16px;
+	transition: border-color 0.3s;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+}
+
+.input-field i {
+	color: #0087c0;
+	margin-right: 10px;
+}
+
+.input-field input {
+	border: none;
+	width: 100%;
+	outline: none;
+}
+
+.search-btn {
+	padding: 12px 30px;
+	background-color: #ff5b5b;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+	background-color: #e04545;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	color: #333;
+	font-weight: 600;
+}
+
+.user-info .fa-user-circle {
+	font-size: 24px;
+	color: #0087c0;
+	margin-right: 8px;
+}
+</style>
+</head>
+<body>
+
+	<div class="header">
+		<a th:href="@{/}" class="logo">StayEZ</a>
+		<div class="nav-links">
+			<a th:href="@{/search}"><i class="fas fa-search"></i> Tìm Khách
+				Sạn</a> <span sec:authorize="!isAuthenticated()"> <a
+				th:href="@{/register}">Đăng Ký</a> <a th:href="@{/login}"
+				class="login-btn">Đăng Nhập</a>
+			</span> <span sec:authorize="isAuthenticated()">
+				<div class="user-info">
+					<i class="fas fa-user-circle"></i> <span sec:authentication="name">Tài
+						khoản</span>
+					<form th:action="@{/logout}" method="post"
+						style="margin-left: 15px;">
+						<button type="submit" class="login-btn"
+							style="background-color: #e0e0e0; color: #333; padding: 5px 10px;">Đăng
+							Xuất</button>
+					</form>
+				</div>
+			</span>
+		</div>
+	</div>
+
+	<div class="hero-section">
+		<h1>Khách Sạn & Chỗ Nghỉ tốt nhất.</h1>
+		<p>Tìm kiếm nơi ở hoàn hảo cho chuyến đi của bạn.</p>
+
+		<div class="search-widget">
+			<div class="tab-menu">
+				<button class="active">
+					<i class="fas fa-hotel"></i> Khách Sạn
+				</button>
+			</div>
+
+			<div class="search-form-container">
+				<form th:action="@{/search}" method="post">
+
+					<div class="input-group" style="flex: 2;">
+						<label for="city">Thành Phố, Địa Điểm</label>
+						<div class="input-field">
+							<i class="fas fa-map-marker-alt"></i> <input type="text"
+								id="city" name="city" placeholder="VD: Hà Nội, Đà Nẵng..."
+								required>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="checkin">Nhận phòng</label>
+						<div class="input-field">
+							<i class="fas fa-calendar-alt"></i> <input type="date"
+								id="checkin" name="checkin">
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="checkout">Trả phòng</label>
+						<div class="input-field">
+							<i class="fas fa-calendar-alt"></i> <input type="date"
+								id="checkout" name="checkout">
+						</div>
+					</div>
+
+					<button type="submit" class="search-btn">Tìm Kiếm</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="popular-destinations"
+		style="padding: 50px 0; background-color: #fff; position: relative;">
+		<h2 style="text-align: center; margin-bottom: 30px; color: #333;">
+			Các điểm đến thu hút nhất Việt Nam</h2>
+
+		<!-- Nút Prev -->
+		<button onclick="scrollPrev()"
+			style="position: absolute; left: 500px; top: 60%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.95); color: #333; border: 1px solid #ccc; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-size: 20px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; transition: 0.3s;"
+			onmouseover="this.style.backgroundColor='rgba(0,123,255,0.9)'; this.style.color='white';"
+			onmouseout="this.style.backgroundColor='rgba(255,255,255,0.95)'; this.style.color='#333';">‹</button>
+
+		<!-- Container -->
+		<div id="destination-container"
+			style="display: flex; gap: 25px; max-width: 1100px; margin: 0 auto; overflow: hidden; scroll-behavior: smooth; padding: 0 70px;">
+
+			<!-- Hồ Chí Minh -->
+			<div class="destination" onclick="goToBooking('HoChiMinh')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/HoChiMinh.jpg}" alt="Hồ Chí Minh"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Hồ Chí Minh</p>
+				<p style="color: gray;">15,591 chỗ ở</p>
+			</div>
+
+			<!-- Hà Nội -->
+			<div class="destination" onclick="goToBooking('HaNoi')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/HaNoi.jpg}" alt="Hà Nội"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Hà Nội</p>
+				<p style="color: gray;">10,744 chỗ ở</p>
+			</div>
+
+			<!-- Đà Nẵng -->
+			<div class="destination" onclick="goToBooking('DaNang')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/DaNang.jpg}" alt="Đà Nẵng"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Đà Nẵng</p>
+				<p style="color: gray;">6,534 chỗ ở</p>
+			</div>
+
+			<!-- Nha Trang -->
+			<div class="destination" onclick="goToBooking('NhaTrang')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/NhaTrang.jpg}" alt="Nha Trang"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Nha Trang</p>
+				<p style="color: gray;">6,329 chỗ ở</p>
+			</div>
+
+			<!-- Đà Lạt -->
+			<div class="destination" onclick="goToBooking('DaLat')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/DaLat.jpg}" alt="Đà Lạt"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Đà Lạt</p>
+				<p style="color: gray;">5,748 chỗ ở</p>
+			</div>
+
+			<!-- Huế -->
+			<div class="destination" onclick="goToBooking('Hue')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/Hue.jpg}" alt="Huế"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Huế</p>
+				<p style="color: gray;">6,975 chỗ ở</p>
+			</div>
+
+			<!-- Hạ Long -->
+			<div class="destination" onclick="goToBooking('HaLong')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/HaLong.jpg}" alt="Hạ Long"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Hạ Long</p>
+				<p style="color: gray;">8,157 chỗ ở</p>
+			</div>
+
+			<!-- Hội An -->
+			<div class="destination" onclick="goToBooking('HoiAn')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/HoiAn.jpg}" alt="Hội An"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Hội An</p>
+				<p style="color: gray;">4,876 chỗ ở</p>
+			</div>
+
+			<!-- Phan Thiết -->
+			<div class="destination" onclick="goToBooking('PhanThiet')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/PhanThiet.jpg}" alt="Phan Thiết"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Phan Thiết</p>
+				<p style="color: gray;">3,749 chỗ ở</p>
+			</div>
+
+			<!-- Quy Nhơn -->
+			<div class="destination" onclick="goToBooking('QuyNhon')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/QuyNhon.jpg}" alt="Quy Nhơn"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Quy Nhơn</p>
+				<p style="color: gray;">2,755 chỗ ở</p>
+			</div>
+
+			<!-- Phú Quốc -->
+			<div class="destination" onclick="goToBooking('PhuQuoc')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/PhuQuoc.jpg}" alt="Phú Quốc"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Phú Quốc</p>
+				<p style="color: gray;">2,348 chỗ ở</p>
+			</div>
+
+			<!-- Cần Thơ -->
+			<div class="destination" onclick="goToBooking('CanTho')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/CanTho.jpg}" alt="Cần Thơ"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Cần Thơ</p>
+				<p style="color: gray;">5,851 chỗ ở</p>
+			</div>
+
+			<!-- Vũng Tàu -->
+			<div class="destination" onclick="goToBooking('VungTau')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/VungTau.jpg}" alt="Vũng Tàu"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Vũng Tàu</p>
+				<p style="color: gray;">6,750 chỗ ở</p>
+			</div>
+
+
+			<!-- Sapa -->
+			<div class="destination" onclick="goToBooking('Sapa')"
+				style="text-align: center; width: 180px; flex-shrink: 0; cursor: pointer;">
+				<img th:src="@{/images/Sapa.jpg}" alt="Sapa"
+					style="width: 180px; height: 120px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+				<p style="font-weight: bold; margin: 10px 0 5px;">Sapa</p>
+				<p style="color: gray;">5,481 chỗ ở</p>
+			</div>
+
+		</div>
+
+		<!-- Nút Next -->
+		<button onclick="scrollNext()"
+			style="position: absolute; right: 500px; top: 60%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.95); color: #333; border: 1px solid #ccc; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; font-size: 20px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; transition: 0.3s;"
+			onmouseover="this.style.backgroundColor='rgba(0,123,255,0.9)'; this.style.color='white';"
+			onmouseout="this.style.backgroundColor='rgba(255,255,255,0.95)'; this.style.color='#333';">›</button>
+	</div>
+	
+
+	<script>
+//Chuyển đến trang booking
+function goToBooking(place) {
+    window.location.href = '/booking?place=' + place;
+}
+
+// ======== VIỆT NAM ========
+const containerVN = document.getElementById("destination-container");
+function scrollNext() {
+    if (containerVN.scrollLeft + containerVN.clientWidth >= containerVN.scrollWidth - 5)
+        containerVN.scrollTo({ left: 0, behavior: 'smooth' });
+    else
+        containerVN.scrollBy({ left: 250, behavior: 'smooth' });
+}
+function scrollPrev() {
+    if (containerVN.scrollLeft <= 0)
+        containerVN.scrollTo({ left: containerVN.scrollWidth, behavior: 'smooth' });
+    else
+        containerVN.scrollBy({ left: -250, behavior: 'smooth' });
+}
+
+let autoVN;
+function startAutoScrollVN() {
+    autoVN = setInterval(() => scrollNext(), 3000);
+}
+window.addEventListener("load", startAutoScrollVN);
+containerVN.addEventListener("mouseenter", () => clearInterval(autoVN));
+containerVN.addEventListener("mouseleave", startAutoScrollVN);
+
+
+</script>
+
+</body>
+</html>

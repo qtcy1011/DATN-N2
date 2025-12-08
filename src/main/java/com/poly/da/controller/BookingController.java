@@ -13,7 +13,7 @@ import com.poly.da.entity.KhachSan;
 import com.poly.da.repository.KhachSanRepository;
 
 @Controller
-public class Bookingcontroller {
+public class BookingController {
 	
 	 @Autowired
 	    private KhachSanRepository khachSanRepo;

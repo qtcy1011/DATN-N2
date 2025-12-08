@@ -280,7 +280,7 @@
     </style>
 </head>
 
-<body th:style="'background-image: url(/images/' + ${place} + '.jpg)'">
+<body th:style="'background-image: url(' + @{/images/{fileName}(fileName=${place} + '.jpg')} + ')'">
 <div class="overlay"></div>
 
 <a href="javascript:history.back()" class="back-btn">⬅ Quay lại</a>
@@ -321,8 +321,10 @@
 
 <script th:inline="javascript">
 // 🟦 DỮ LIỆU KHÁCH SẠN ĐƯỢC CHUYỂN TỪ SQL SANG JS
+// ĐÃ ĐƯỢC ĐIỀU CHỈNH ĐỂ KHỚP ĐÚNG MaKhachSan (ID) CỦA CƠ SỞ DỮ LIỆU
 
 const ALL_HOTELS = [
+    // Dữ liệu 1-10 (Giữ nguyên)
     { MaKhachSan: 1, TenKhachSan: "Khách sạn Vinpearl Luxury", DiaChi: "Trường Sa", ThanhPho: "Đà Nẵng", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng sang trọng bậc nhất.", Rating: 4.8, UrlHinhAnhDaiDien: 'img_1.jpg', GiaMoiDem: "1.200.000 VNĐ" },
     { MaKhachSan: 2, TenKhachSan: "Khách sạn Mường Thanh", DiaChi: "Lê Lợi", ThanhPho: "Hà Nội", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn trung tâm thành phố.", Rating: 4.2, UrlHinhAnhDaiDien: 'img_2.jpg', GiaMoiDem: "850.000 VNĐ" },
     { MaKhachSan: 3, TenKhachSan: "Khách sạn Ibis Budget", DiaChi: "Nam Kỳ Khởi Nghĩa", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 3, MoTa: "Khách sạn tiện nghi, giá rẻ.", Rating: 3.9, UrlHinhAnhDaiDien: 'img_3.jpg', GiaMoiDem: "450.000 VNĐ" },
@@ -333,16 +335,16 @@ const ALL_HOTELS = [
     { MaKhachSan: 8, TenKhachSan: "Salinda Resort Phú Quốc", DiaChi: "Dương Tơ", ThanhPho: "Phú Quốc", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Bãi biển riêng, yên tĩnh.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_8.jpg', GiaMoiDem: "4.100.000 VNĐ" },
     { MaKhachSan: 9, TenKhachSan: "Khách sạn Novotel Saigon", DiaChi: "Lê Thánh Tôn", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Thương hiệu quốc tế, tiện nghi.", Rating: 4.3, UrlHinhAnhDaiDien: 'img_9.jpg', GiaMoiDem: "1.050.000 VNĐ" },
     { MaKhachSan: 10, TenKhachSan: "Hội An Silk Marina Resort", DiaChi: "Nguyễn Phan Vinh", ThanhPho: "Hội An", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Kiến trúc Hội An truyền thống.", Rating: 4.4, UrlHinhAnhDaiDien: 'img_10.jpg', GiaMoiDem: "950.000 VNĐ" },
-    { MaKhachSan: 11, TenKhachSan: "Khách sạn Sapa Jade Hill Resort", DiaChi: "Lao Chải", ThanhPho: "Sapa", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Resort vùng núi với view thung lũng tuyệt đẹp.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_11.jpg', GiaMoiDem: "2.100.000 VNĐ" },
-    { MaKhachSan: 12, TenKhachSan: "Khách sạn Mường Thanh Luxury Hạ Long", DiaChi: "Hòn Gai", ThanhPho: "Hạ Long", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khách sạn cao cấp, gần Vịnh Hạ Long.", Rating: 4.3, UrlHinhAnhDaiDien: 'img_12.jpg', GiaMoiDem: "1.950.000 VNĐ" },
-    { MaKhachSan: 13, TenKhachSan: "Khách sạn Mercure Đà Lạt Resort", DiaChi: "Hồ Tuyền Lâm", ThanhPho: "Đà Lạt", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Phong cách nghỉ dưỡng lãng mạn, yên tĩnh.", Rating: 4.4, UrlHinhAnhDaiDien: 'img_13.jpg', GiaMoiDem: "1.600.000 VNĐ" },
-    { MaKhachSan: 14, TenKhachSan: "Khách sạn Azerai Cần Thơ", DiaChi: "Cồn Cái Khế", ThanhPho: "Cần Thơ", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng biệt lập trên cồn, sang trọng.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_14.jpg', GiaMoiDem: "3.800.000 VNĐ" },
-    { MaKhachSan: 15, TenKhachSan: "Khách sạn Banyan Tree Lăng Cô", DiaChi: "Lăng Cô", ThanhPho: "Huế", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Villa có hồ bơi riêng, view biển đẹp nhất miền Trung.", Rating: 4.8, UrlHinhAnhDaiDien: 'img_15.jpg', GiaMoiDem: "5.500.000 VNĐ" },
-    { MaKhachSan: 16, TenKhachSan: "Khách sạn TTC Phan Thiết", DiaChi: "Nguyễn Đình Chiểu", ThanhPho: "Phan Thiết", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn bên bờ biển Mũi Né.", Rating: 4.1, UrlHinhAnhDaiDien: 'img_16.jpg', GiaMoiDem: "980.000 VNĐ" },
-    { MaKhachSan: 17, TenKhachSan: "Khách sạn FLC Grand Quy Nhơn", DiaChi: "Eo Gió", ThanhPho: "Quy Nhơn", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng lớn, thiết kế độc đáo.", Rating: 4.6, UrlHinhAnhDaiDien: 'img_17.jpg', GiaMoiDem: "2.800.000 VNĐ" },
-    { MaKhachSan: 18, TenKhachSan: "Khách sạn Four Points by Sheraton Đà Nẵng", DiaChi: "Võ Nguyên Giáp", ThanhPho: "Đà Nẵng", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn mặt biển, hồ bơi vô cực.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_18.jpg', GiaMoiDem: "1.450.000 VNĐ" },
-    { MaKhachSan: 19, TenKhachSan: "Khách sạn Vũng Tàu Intourco Resort", DiaChi: "Thùy Vân", ThanhPho: "Vũng Tàu", QuocGia: "Việt Nam", TieuChuanSao: 3, MoTa: "Resort bình dân, có bãi biển riêng.", Rating: 3.8, UrlHinhAnhDaiDien: 'img_19.jpg', GiaMoiDem: "890.000 VNĐ" },
-    { MaKhachSan: 20, TenKhachSan: "Khách sạn Mai House Sài Gòn", DiaChi: "Ngô Thời Nhiệm", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khách sạn boutique sang trọng, phong cách Đông Dương.", Rating: 4.7, UrlHinhAnhDaiDien: 'img_20.jpg', GiaMoiDem: "3.300.000 VNĐ" }
+    { MaKhachSan: 11, TenKhachSan: "Khách sạn Mai House Sài Gòn", DiaChi: "Lý Tự Trọng", ThanhPho: "TP.HCM", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Thiết kế boutique độc đáo, ấm cúng, ngay trung tâm.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_11.jpg', GiaMoiDem: "2.200.000 VNĐ" },
+    { MaKhachSan: 12, TenKhachSan: "Khách sạn Four Points by Sheraton Đà Nẵng", DiaChi: "Võ Nguyên Giáp", ThanhPho: "Đà Nẵng", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Thương hiệu quốc tế, view biển Mỹ Khê tuyệt đẹp.", Rating: 4.7, UrlHinhAnhDaiDien: 'img_12.jpg', GiaMoiDem: "1.850.000 VNĐ" },
+    { MaKhachSan: 13, TenKhachSan: "Khách sạn Mercure Đà Lạt Resort", DiaChi: "Hồ Tuyền Lâm", ThanhPho: "Đà Lạt", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khu nghỉ dưỡng yên tĩnh, kiến trúc cổ điển Pháp.", Rating: 4.4, UrlHinhAnhDaiDien: 'img_13.jpg', GiaMoiDem: "1.600.000 VNĐ" },
+    { MaKhachSan: 14, TenKhachSan: "Khách sạn Banyan Tree Lăng Cô", DiaChi: "Lăng Cô", ThanhPho: "Huế", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Resort sang trọng, đẳng cấp thế giới, bãi biển riêng.", Rating: 4.9, UrlHinhAnhDaiDien: 'img_14.jpg', GiaMoiDem: "5.500.000 VNĐ" },
+    { MaKhachSan: 15, TenKhachSan: "Khách sạn Mường Thanh Luxury Hạ Long", DiaChi: "Bãi Cháy", ThanhPho: "Hạ Long", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Vị trí đắc địa, nhìn ra Vịnh Hạ Long.", Rating: 4.5, UrlHinhAnhDaiDien: 'img_15.jpg', GiaMoiDem: "1.950.000 VNĐ" },
+    { MaKhachSan: 16, TenKhachSan: "Khách sạn TTC Phan Thiết", DiaChi: "Nguyễn Đình Chiểu", ThanhPho: "Phan Thiết", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Khách sạn bên bờ biển Mũi Né.", Rating: 4.2, UrlHinhAnhDaiDien: 'img_16.jpg', GiaMoiDem: "980.000 VNĐ" },
+    { MaKhachSan: 17, TenKhachSan: "Khách sạn FLC Grand Quy Nhơn", DiaChi: "Eo Gió", ThanhPho: "Quy Nhơn", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu phức hợp nghỉ dưỡng lớn, thiết kế độc đáo.", Rating: 4.6, UrlHinhAnhDaiDien: 'img_17.jpg', GiaMoiDem: "2.800.000 VNĐ" },
+    { MaKhachSan: 18, TenKhachSan: "Khách sạn Azerai Cần Thơ", DiaChi: "Cồn Ấu", ThanhPho: "Cần Thơ", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Khu nghỉ dưỡng biệt lập, trải nghiệm sông nước Miền Tây.", Rating: 4.8, UrlHinhAnhDaiDien: 'img_18.jpg', GiaMoiDem: "3.800.000 VNĐ" },
+    { MaKhachSan: 19, TenKhachSan: "Khách sạn Vũng Tàu Intourco Resort", DiaChi: "Thùy Vân", ThanhPho: "Vũng Tàu", QuocGia: "Việt Nam", TieuChuanSao: 4, MoTa: "Resort bình dân, có bãi biển riêng.", Rating: 4.3, UrlHinhAnhDaiDien: 'img_19.jpg', GiaMoiDem: "890.000 VNĐ" },
+    { MaKhachSan: 20, TenKhachSan: "Khách sạn Sapa Jade Hill resort", DiaChi: "Lao Chải", ThanhPho: "Sapa", QuocGia: "Việt Nam", TieuChuanSao: 5, MoTa: "Resort cao cấp, view thung lũng Mường Hoa.", Rating: 4.7, UrlHinhAnhDaiDien: 'img_20.jpg', GiaMoiDem: "2.100.000 VNĐ" }
 
 ];
 
@@ -438,10 +440,10 @@ function searchHotels() {
             
             // THAY ĐỔI: Sử dụng dữ liệu THỰC TẾ từ mảng ALL_HOTELS
             hotelsHtml += `
-                <a href="/hotel-detail?id=${hotel.MaKhachSan}" class="hotel-card-link">
+                <a href="/hotel/${hotel.MaKhachSan}" class="hotel-card-link">
                     <div class="hotel-card">
                         <div class="hotel-card-image" style="background-image: url('${imageUrl}');">
-                            </div>
+                        </div>
                         <div class="hotel-card-content">
                             <h3>${hotel.TenKhachSan} <small>(${hotel.TieuChuanSao}⭐)</small></h3>
                             <p><strong>Địa chỉ:</strong> ${hotel.DiaChi}, ${hotel.ThanhPho}</p>
@@ -450,6 +452,7 @@ function searchHotels() {
                         </div>
                     </div>
                 </a>`;
+
         });
     }
 

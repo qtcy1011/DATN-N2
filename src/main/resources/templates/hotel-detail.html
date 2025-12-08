@@ -2,210 +2,347 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Chi tiết Khách sạn: ' + ${hotel.tenKhachSan}"></title>
+    <title th:text="'Chi tiết Khách sạn: ' + ${hotel.tenKhachSan}">Chi tiết Khách sạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
-        /* CSS CŨ */
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 0; }
-        .container { max-width: 900px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .back-btn { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007bff; font-weight: 600; }
-        .hotel-image { width: 100%; height: 450px; object-fit: cover; border-radius: 10px; margin-bottom: 25px; }
-        h1 { color: #0056b3; font-size: 2.2em; margin-bottom: 5px; }
-        .meta-info p { margin: 5px 0; font-size: 1.1em; }
-        .meta-info strong { color: #d9534f; }
-        .description { margin-top: 20px; padding: 15px; background: #f1f1f1; border-radius: 8px; }
-        .price-box { font-size: 1.8em; font-weight: 700; color: #28a745; margin-top: 20px; text-align: right;}
-        .booking-button { width: 100%; padding: 15px; background-color: #ffc107; color: #333; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; margin-top: 20px; transition: background-color 0.3s; }
-        .booking-button:hover { background-color: #ffcd39; }
-
-        /* CSS MỚI CHO MODAL ĐẶT PHÒNG */
-        .modal {
-            display: none; /* Ẩn theo mặc định */
-            position: fixed; /* Giữ cố định trên màn hình */
-            z-index: 1; /* Nằm trên các nội dung khác */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; /* Cho phép cuộn nếu nội dung quá dài */
-            background-color: rgba(0,0,0,0.4); /* Nền mờ */
-            padding-top: 60px;
+        :root {
+            --primary-blue: #0070e6;
+            --dark-blue: #0056b3;
+            --secondary-color: #ffc107;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --star-color: #ff9800;
+            --border-color: #e0e0e0;
+            --input-bg: #f9f9f9;
+            --success-color: #28a745;
         }
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* 5% từ trên xuống và căn giữa */
-            padding: 25px;
-            border: 1px solid #888;
-            width: 80%; /* Chiều rộng */
-            max-width: 600px;
-            border-radius: 10px;
-            position: relative;
-            animation-name: animatetop;
-            animation-duration: 0.4s
-        }
-
-        /* Hiệu ứng trượt xuống */
-        @keyframes animatetop {
-            from {top: -300px; opacity: 0}
-            to {top: 0; opacity: 1}
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="tel"],
-        .form-group input[type="date"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Quan trọng để padding không làm tăng chiều rộng */
-        }
-
-        .submit-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1em;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            background-color: #218838;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: var(--text-color); margin: 0; padding: 0; }
+        .main-content-wrapper { display: grid; grid-template-columns: minmax(600px, 2fr) 300px; max-width: 1200px; margin: 0 auto; gap: 30px; padding: 20px 20px 40px; }
+        .section-box { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .section-box h2 { font-size: 1.6em; color: var(--primary-blue); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; font-weight: 700; }
+        .header-bar { background: white; padding: 20px 0; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: relative; }
+        .header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center; }
+        .header-content h1 { font-size: 2.5em; color: var(--dark-blue); font-weight: 800; margin: 0; }
+        .meta-info { display: flex; align-items: center; gap: 20px; font-size: 1em; color: #555; margin-top: 10px; justify-content: center; }
+        .meta-info span { display: flex; align-items: center; }
+        .meta-info .rating-badge { background-color: var(--primary-blue); color: white; padding: 5px 10px; border-radius: 5px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .meta-info .star-rating { color: var(--star-color); }
+        .back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background-color: rgba(255, 255, 255, 0.9); padding: 8px 15px; border-radius: 6px; text-decoration: none; color: var(--text-color); font-weight: 500; transition: background-color 0.3s; }
+        .back-btn:hover { background-color: var(--primary-blue); color: white; }
+        .image-gallery { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+        .main-image-container { position: relative; padding-top: 60%; overflow: hidden; border-radius: 10px; }
+        .hotel-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .amenities-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .amenity-item { display: flex; align-items: center; gap: 10px; color: #555; font-size: 0.9em; }
+        .amenity-item i { color: var(--primary-blue); font-size: 1.2em; }
+        .room-type-card { display: flex; align-items: stretch; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; transition: box-shadow 0.3s; }
+        .room-type-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .room-info { flex-grow: 1; padding: 15px; }
+        .room-info h4 { margin: 0 0 5px; color: var(--dark-blue); font-weight: 700; font-size: 1.1em; }
+        .room-price-cta { padding: 15px; background-color: #f7f9fc; text-align: center; width: 150px; min-width: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; border-left: 1px solid #eee; }
+        .room-price-cta .price { font-size: 1.4em; font-weight: 800; color: #d9534f; }
+        .room-price-cta button { background-color: var(--secondary-color); color: var(--text-color); border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background-color 0.3s; }
+        .room-price-cta button:hover { background-color: #ffda6a; }
+        .booking-widget { position: sticky; top: 30px; height: fit-content; background-color: white; padding: 25px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
+        .price-display { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .price-display small { font-size: 1em; color: #777; margin-bottom: 5px; display: block; }
+        .price-display strong { font-size: 2.5em; color: #d9534f; font-weight: 800; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-color); font-size: 0.9em; }
+        .form-control, .booking-widget input, .review-form-box input, .review-form-box textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; background-color: var(--input-bg); box-sizing: border-box; transition: border-color 0.3s, box-shadow 0.3s; }
+        .form-control:focus, .booking-widget input:focus, .review-form-box input:focus, .review-form-box textarea:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0, 112, 230, 0.2); outline: none; background-color: white; }
+        .booking-button { width: 100%; padding: 15px; background-color: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; transition: background-color 0.3s, transform 0.1s; font-weight: 600; margin-top: 10px; }
+        .booking-button:hover { background-color: var(--dark-blue); transform: translateY(-1px); }
+        .booking-widget p { font-size: 0.9em; color: var(--success-color); font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .review-card { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: #fafafa; }
+        .reviewer-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.9em; }
+        .reviewer-meta strong { color: var(--primary-blue); }
+        .review-rating i { color: var(--star-color); }
+        .review-text { color: #444; line-height: 1.5; margin-top: 10px; }
+        .no-reviews { padding: 20px; text-align: center; color: #777; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }
+        .review-form-box { margin-top: 20px; padding: 20px; background: #f0f8ff; border: 1px solid #cce5ff; border-radius: 8px; }
+        .flash-message { padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .flash-error { background-color:#f8d7da; color:#842029; border:1px solid #f5c2c7; }
+        .flash-success { background-color:#d1e7dd; color:#0f5132; border:1px solid #badbcc; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); padding-top: 50px; }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 30px; border: none; width: 90%; max-width: 450px; border-radius: 12px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-content h2 { color: var(--dark-blue); font-size: 1.8em; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; }
+        #modalRoomDetails strong { color: #d9534f; font-size: 1.1em; }
+        .submit-btn { background-color: var(--success-color); font-weight: 600; width: 100%; padding: 12px; margin-top: 20px; font-size: 1.1em; }
+        .submit-btn:hover { background-color: #218838; }
+        .close { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 36px; font-weight: normal; line-height: 1; text-decoration: none; cursor: pointer; transition: color 0.3s; }
+        .close:hover, .close:focus { color: var(--dark-blue); }
+        @media (max-width: 992px) { .main-content-wrapper { grid-template-columns: 1fr; gap: 20px; } .booking-widget { position: static; order: -1; } }
     </style>
 </head>
 <body>
-    <div class="container" th:object="${hotel}">
-        
-        <a href="javascript:history.back()" class="back-btn">⬅ Quay lại trang tìm kiếm</a>
-        
-        <h1 th:text="*{tenKhachSan}">Tên Khách Sạn</h1>
-        
-        <div class="meta-info">
-            <p>⭐ Tiêu chuẩn: <strong th:text="*{tieuChuanSao} + ' Sao'">5 Sao</strong> | 
-               Đánh giá: <strong th:text="*{rating}">4.9</strong>/5</p>
-            <p>📍 Địa chỉ: <span th:text="*{diaChi} + ', ' + *{thanhPho} + ', ' + *{quocGia}">Địa chỉ chi tiết</span></p>
-        </div>
-
-        <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
-             th:alt="*{tenKhachSan}" 
-             class="hotel-image">
-
-        <h2>📝 Mô tả & Tiện ích</h2>
-        <div class="description">
-            <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
-        </div>
-
-        <button class="booking-button" onclick="openBookingModal()">ĐẶT PHÒNG NGAY</button>
-    </div>
-
-    <div id="bookingModal" class="modal">
-
-        <div class="modal-content">
-            <span class="close" onclick="closeBookingModal()">&times;</span>
-            <h2>Thông tin Đặt Phòng</h2>
-            
-            <form id="bookingForm" onsubmit="submitBooking(event)">
-                <div class="form-group">
-                    <label for="fullName">Họ và Tên:</label>
-                    <input type="text" id="fullName" name="fullName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Số điện thoại:</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="checkIn">Ngày nhận phòng:</label>
-                    <input type="date" id="checkIn" name="checkIn" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="checkOut">Ngày trả phòng:</label>
-                    <input type="date" id="checkOut" name="checkOut" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="numGuests">Số lượng khách:</label>
-                    <input type="number" id="numGuests" name="numGuests" min="1" value="1" required>
-                </div>
-                
-                <button type="submit" class="submit-btn">Xác nhận Đặt Phòng</button>
-            </form>
+<div th:object="${hotel}">
+    <div class="header-bar">
+        <a href="javascript:history.back()" class="back-btn">⬅ Quay lại</a>
+        <div class="header-content">
+            <h1 th:text="*{tenKhachSan}">Tên Khách Sạn</h1>
+            <div class="meta-info">
+                <span class="star-rating">
+                    <i th:each="i : ${#numbers.sequence(1, hotel.tieuChuanSao)}" class="fas fa-star"></i>
+                </span>
+                <span th:if="*{rating}" class="rating-badge" th:text="*{rating} + '/5 tuyệt vời'">4.9/5 tuyệt vời</span>
+                <span><i class="fas fa-map-marker-alt"></i> <span th:text="*{diaChi} + ', ' + *{thanhPho}">Địa chỉ chi tiết</span></span>
+            </div>
         </div>
     </div>
-    <script>
-        // Lấy modal
-        var modal = document.getElementById("bookingModal");
 
-        // Hàm mở modal
-        function openBookingModal() {
-            modal.style.display = "block";
-        }
+    <div class="main-content-wrapper">
 
-        // Hàm đóng modal
-        function closeBookingModal() {
-            modal.style.display = "none";
-        }
+        <div class="hotel-details-container">
 
-        // Hàm xử lý khi submit form
-        function submitBooking(event) {
-            event.preventDefault(); // Ngăn chặn form submit thực sự (tải lại trang)
+            <div class="image-gallery">
+                <div class="main-image-container">
+                    <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
+                         th:alt="*{tenKhachSan}" 
+                         class="hotel-image">
+                </div>
+            </div>
 
-            // Ở đây, bạn sẽ thực hiện logic gửi dữ liệu đặt phòng lên server
-            // Ví dụ: sử dụng fetch/axios để gửi dữ liệu từ form (event.target)
+            <div class="section-box">
+                <h2>Về Khách Sạn</h2>
+                <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
+            </div>
 
-            // Sau khi xử lý thành công (giả lập):
-            alert("ĐẶT PHÒNG THÀNH CÔNG! \nCảm ơn bạn đã chọn khách sạn của chúng tôi. Chúng tôi sẽ gửi xác nhận chi tiết qua email.");
+            <div class="section-box">
+                <h2><i class="fas fa-concierge-bell"></i> Tiện nghi & Dịch vụ Nổi bật</h2>
+                <div class="amenities-list">
+                    <div class="amenity-item"><i class="fas fa-wifi"></i> Wifi Miễn phí</div>
+                    <div class="amenity-item"><i class="fas fa-parking"></i> Bãi đỗ xe</div>
+                    <div class="amenity-item"><i class="fas fa-swimming-pool"></i> Hồ bơi</div>
+                    <div class="amenity-item"><i class="fas fa-utensils"></i> Nhà hàng</div>
+                    <div class="amenity-item"><i class="fas fa-dumbbell"></i> Phòng Gym</div>
+                    <div class="amenity-item"><i class="fas fa-spa"></i> Spa & Massage</div>
+                    <div class="amenity-item"><i class="fas fa-child"></i> Khu vui chơi trẻ em</div>
+                    <div class="amenity-item"><i class="fas fa-umbrella-beach"></i> Bãi biển riêng</div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <h2><i class="fas fa-bed"></i> Chọn Loại Phòng</h2>
+                <div th:if="${roomTypes != null and not #lists.isEmpty(roomTypes)}">
+                    <div class="room-type-card" th:each="room : ${roomTypes}">
+                        <div class="room-info">
+                            <h4 th:text="${room.tenLoaiPhong}">Tên Loại Phòng</h4>
+                            <p>
+                                <i class="fas fa-expand-arrows-alt"></i> <span th:text="${room.dienTich} + 'm²'">35m²</span> | 
+                                <i class="fas fa-users"></i> <span th:text="${room.sucChua} + ' Người lớn'">2 Người lớn</span>
+                                <span th:if="${room.tienNghi}"> | <i class="fas fa-couch"></i> <span th:text="${room.tienNghi}"></span></span>
+                            </p>
+                        </div>
+                        <div class="room-price-cta">
+                            <small>Giá niêm yết:</small>
+                            <div class="price" 
+                                 th:with="formattedPrice=${#numbers.formatDecimal(room.giaNiemYet, 0, 'POINT', 0, 'COMMA')}"
+                                 th:text="${formattedPrice} + ' VNĐ/đêm'">
+                                 1,500,000 VNĐ/đêm
+                            </div> 
+                            <button 
+                                onclick="openBookingModal(this)"
+                                th:data-room-id="${room.maLoaiPhong}"
+                                th:data-room-name="${room.tenLoaiPhong}"
+                                th:data-price="${#numbers.formatDecimal(room.giaNiemYet, 0, 'POINT', 0, 'COMMA')}">
+                                Chọn Phòng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div th:unless="${roomTypes != null and not #lists.isEmpty(roomTypes)}" class="no-reviews">
+                    Khách sạn này hiện chưa có thông tin loại phòng nào.
+                </div>
+            </div>
+
+            <div class="section-box">
+                <h2><i class="fas fa-comments"></i> Đánh giá Khách hàng 
+                    (<span th:text="${reviews != null ? reviews.size() : 0}">0</span> lượt)
+                </h2>
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="flash-message flash-error">
+                    <span th:each="err : ${#fields.globalErrors()}" th:text="${err}"></span>
+                </div>
+                <div th:if="${successMessage}" class="flash-message flash-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="flash-message flash-error" th:text="${errorMessage}"></div>
+
+                <div th:if="${reviews != null and not #lists.isEmpty(reviews)}">
+                    <div class="review-card" th:each="review : ${reviews}">
+                        <div class="reviewer-meta">
+                            <strong>Khách hàng #<span th:text="${review.maKhachHang}">123</span></strong>
+                            <span class="review-rating">
+                                <i th:each="i : ${#numbers.sequence(1, review.diemSo.intValue())}" class="fas fa-star"></i>
+                                <span th:text="${review.diemSo}">5</span>
+                            </span>
+                        </div>
+                        <small th:text="'Ngày: ' + ${#temporals.format(review.ngayTao, 'dd-MM-yyyy HH:mm')}">Ngày: 01-12-2025</small>
+                        <p class="review-text" th:text="${review.noiDung}">Nội dung đánh giá chi tiết.</p>
+                    </div>
+                </div>
+                <div th:unless="${reviews != null and not #lists.isEmpty(reviews)}" class="no-reviews">
+                    Chưa có đánh giá nào cho khách sạn này. Hãy là người đầu tiên!
+                </div>
+
+                <div class="review-form-box">
+                    <h3>Gửi Đánh Giá Của Bạn</h3>
+                    <form th:action="@{/submit-review}" method="post">
+                        <input type="hidden" name="maKhachSan" th:value="${hotel.maKhachSan}">
+                        <div class="form-group">
+                            <label for="diemSo">Điểm Đánh Giá (1-5):</label>
+                            <input type="number" id="diemSo" name="diemSo" class="form-control" min="1" max="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="noiDung">Nội Dung Đánh Giá:</label>
+                            <textarea id="noiDung" name="noiDung" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn booking-button" style="width: auto; padding: 10px 20px;">Gửi Đánh Giá</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <aside class="booking-widget">
+            <div class="price-display">
+                <small>Giá tốt nhất từ</small>
+                <th:block th:if="${roomTypes != null and not #lists.isEmpty(roomTypes)}">
+                    <strong th:with="minPrice=${roomTypes.get(0).giaNiemYet}"
+                            th:text="${#numbers.formatDecimal(minPrice, 0, 'POINT', 0, 'COMMA')} + ' VNĐ'">
+                        Giá/đêm
+                    </strong> 
+                </th:block>
+                <th:block th:unless="${roomTypes != null and not #lists.isEmpty(roomTypes)}">
+                    <strong>Liên hệ</strong>
+                </th:block>
+            </div>
+
+            <div class="form-group">
+                <label for="widgetCheckIn">Nhận phòng:</label>
+                <input type="date" id="widgetCheckIn" class="form-control" value="2025-12-08">
+            </div>
+            <div class="form-group">
+                <label for="widgetCheckOut">Trả phòng:</label>
+                <input type="date" id="widgetCheckOut" class="form-control" value="2025-12-09">
+            </div>
+            <div class="form-group">
+                <label for="widgetGuests">Số khách:</label>
+                <input type="number" id="widgetGuests" class="form-control" min="1" value="2">
+            </div>
+
+            <button class="booking-button" onclick="openBookingModal(null)">TIẾN HÀNH ĐẶT PHÒNG</button>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.8em; color: green;">
+                <i class="fas fa-check-circle"></i> Miễn phí hủy trong 48 giờ.
+            </p>
+        </aside>
+
+    </div>
+</div>
+
+<div id="bookingModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeBookingModal()">&times;</span>
+        <h2>Thông tin Đặt Phòng</h2>
+
+        <form id="bookingForm" th:action="@{/checkout}" method="post">
+            <p>Khách sạn: <strong th:text="*{tenKhachSan}">Tên Khách Sạn</strong></p>
+            <p id="modalRoomDetails">Vui lòng chọn loại phòng</p>
             
-            closeBookingModal(); // Đóng modal
-            document.getElementById("bookingForm").reset(); // Reset form
-            
-            // Lưu ý: Trong một ứng dụng thực tế, bạn cần gửi dữ liệu này lên server.
-        }
+            <input type="hidden" name="hotelName" th:value="*{tenKhachSan}"> 
+            <input type="hidden" id="selectedRoomId" name="selectedRoomId">
 
-        // Đóng modal khi click ra ngoài
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeBookingModal();
+            <div class="form-group">
+                <label for="fullName">Họ và Tên:</label>
+                <input type="text" id="fullName" name="fullName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Số điện thoại:</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkIn">Ngày nhận phòng:</label>
+                <input type="date" id="checkIn" name="checkIn" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkOut">Ngày trả phòng:</label>
+                <input type="date" id="checkOut" name="checkOut" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="numGuests">Số lượng khách:</label>
+                <input type="number" id="numGuests" name="numGuests" class="form-control" min="1" value="1" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Xác nhận Đặt Phòng</button>
+        </form>
+    </div>
+</div>
+
+<script>
+	var modal = document.getElementById("bookingModal");
+	let selectedRoomId = null;
+	let selectedRoomName = null;
+	let selectedRoomPrice = null;
+	
+	function openBookingModal(button) {
+	    // Cập nhật ngày tháng và số khách từ widget bên phải
+	    document.getElementById('checkIn').value = document.getElementById('widgetCheckIn').value;
+	    document.getElementById('checkOut').value = document.getElementById('widgetCheckOut').value;
+	    document.getElementById('numGuests').value = document.getElementById('widgetGuests').value;
+	
+	    const roomDetailsElement = document.getElementById('modalRoomDetails');
+	    const submitButton = document.querySelector('#bookingForm .submit-btn');
+	
+	    if (button) {
+	        // Nếu click từ nút "Chọn Phòng" cụ thể
+	        selectedRoomId = button.getAttribute('data-room-id');
+	        selectedRoomName = button.getAttribute('data-room-name');
+	        selectedRoomPrice = button.getAttribute('data-price');
+	
+	        document.getElementById('selectedRoomId').value = selectedRoomId;
+	        roomDetailsElement.innerHTML = `Loại phòng đã chọn: <strong>${selectedRoomName}</strong> (Giá: <strong>${selectedRoomPrice} VNĐ/đêm</strong>)`;
+	        submitButton.disabled = false;
+	        submitButton.style.backgroundColor = 'var(--success-color)';
+	    } else {
+	        // Nếu click từ nút "TIẾN HÀNH ĐẶT PHÒNG" widget (cần chọn phòng)
+            // Lấy lại thông tin phòng nếu đã chọn trước đó
+            if (selectedRoomId) {
+                document.getElementById('selectedRoomId').value = selectedRoomId;
+                roomDetailsElement.innerHTML = `Loại phòng đã chọn: <strong>${selectedRoomName}</strong> (Giá: <strong>${selectedRoomPrice} VNĐ/đêm</strong>)`;
+                submitButton.disabled = false;
+	            submitButton.style.backgroundColor = 'var(--success-color)';
+            } else {
+                roomDetailsElement.innerHTML = `<span style="color: red;">⚠️ Vui lòng quay lại và chọn một loại phòng cụ thể.</span>`;
+                document.getElementById('selectedRoomId').value = '';
+                submitButton.disabled = true;
+                submitButton.style.backgroundColor = '#ccc';
             }
-        }
-    </script>
+	    }
+	
+	    modal.style.display = "block";
+	}
+	
+	function closeBookingModal() {
+	    modal.style.display = "none";
+	}
+	
+    // HÀM submitBooking VỚI ALERT GIẢ LẬP ĐÃ BỊ XÓA BỎ.
+    // Việc submit sẽ được thực hiện tự động bởi Form khi bấm type="submit"
+	
+	window.onclick = function(event) {
+	    if (event.target == modal) { closeBookingModal(); }
+	}
+</script>
 </body>
 </html>

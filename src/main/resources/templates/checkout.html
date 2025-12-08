@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout & Thanh toán</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #0070e6;
+            --secondary-color: #ffc107;
+            --success-color: #28a745;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --light-bg: #f5f5f5;
+        }
+        body { font-family: 'Poppins', sans-serif; background: var(--light-bg); margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary-blue); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .info-section span { font-weight: 500; color: #555; }
+        .info-section strong { font-weight: 700; color: var(--text-color); }
+        .checkout-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .checkout-table th, .checkout-table td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+        .checkout-table th { background: var(--primary-blue); color: white; }
+        .checkout-summary { text-align: right; margin-top: 10px; font-size: 1.1em; }
+        .checkout-summary strong { font-size: 1.3em; color: #d9534f; } /* Màu đỏ cho tổng tiền */
+        .payment-btn { width: 100%; padding: 15px; background-color: var(--success-color); /* Màu xanh cho thanh toán */ color: white; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .payment-btn:hover { background-color: #218838; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--primary-blue); text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Thông tin Đặt chỗ</h2>
+
+    <div class="info-section">
+        <span>Khách sạn:</span> <strong th:text="${hotelName}">Tên khách sạn</strong>
+    </div>
+    <div class="info-section">
+        <span>Loại phòng:</span> <strong th:text="${roomName}">Tên phòng</strong>
+    </div>
+    <div class="info-section">
+        <span>Ngày nhận phòng:</span> <strong th:text="${#temporals.format(checkIn, 'dd/MM/yyyy')}">08/12/2025</strong>
+    </div>
+    <div class="info-section">
+        <span>Ngày trả phòng:</span> <strong th:text="${#temporals.format(checkOut, 'dd/MM/yyyy')}">09/12/2025</strong>
+    </div>
+    <div class="info-section">
+        <span>Số đêm:</span> <strong th:text="${soDem}">1</strong>
+    </div>
+    <div class="info-section">
+        <span>Số khách:</span> <strong th:text="${numGuests}">2</strong>
+    </div>
+
+    <hr>
+    
+    <h2>Thông tin khách hàng</h2>
+    <div class="info-section">
+        <span>Họ và Tên:</span> <strong th:text="${fullName}">Nguyễn Văn A</strong>
+    </div>
+    <div class="info-section">
+        <span>Email:</span> <strong th:text="${email}">email@example.com</strong>
+    </div>
+    <div class="info-section">
+        <span>Số điện thoại:</span> <strong th:text="${phone}">0123456789</strong>
+    </div>
+    
+    <hr>
+
+    <h2>Chi tiết thanh toán</h2>
+    <table class="checkout-table">
+        <thead>
+            <tr>
+                <th>Mục</th>
+                <th>Số đêm</th>
+                <th>Giá/đêm</th>
+                <th>Tổng cộng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td th:text="${roomName}">Phòng Superior</td>
+                <td th:text="${soDem}">1</td>
+                <td th:text="${#numbers.formatDecimal(roomPrice, 0, 'POINT', 0, 'COMMA')} + ' VNĐ'">1,500,000 VNĐ</td>
+                
+                <td th:with="lineTotal=${roomPrice * soDem}"
+                    th:text="${#numbers.formatDecimal(lineTotal, 0, 'POINT', 0, 'COMMA')} + ' VNĐ'">
+                    1,500,000 VNĐ
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="checkout-summary">
+        Tổng thanh toán cuối cùng: 
+        <strong th:text="${#numbers.formatDecimal(tongThanhToan, 0, 'POINT', 0, 'COMMA')} + ' VNĐ'">1,500,000 VNĐ</strong>
+    </div>
+
+    <button class="payment-btn" onclick="alert('Đã gửi yêu cầu thanh toán thành công!')">
+        <i class="fas fa-credit-card"></i> Hoàn tất Đặt chỗ & Thanh toán
+    </button>
+    
+    <a href="/" class="back-link">Về trang chủ</a>
+</div>
+
+</body>
+</html>
