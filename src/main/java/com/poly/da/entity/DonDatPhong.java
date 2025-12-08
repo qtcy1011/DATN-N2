@@ -3,33 +3,47 @@ package com.poly.da.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "DONDATPHONG") // bỏ tab
 public class DonDatPhong {
+
     @Id
     private String maDonDatPhong;
 
     private LocalDate checkin;
     private LocalDate checkout;
-    private Double giamGiaKhac;
+    
+    @Column(precision = 18, scale = 2)
+    private BigDecimal giamGiaKhac;
+
     private String maKhachHang;
     private String maKhuyenMai;
     private LocalDate ngayDat;
-    private Double thanhToanCuoi;
-    private Double tienGiamTruVIP;
-    private Double tongTienPhong;
+
+    @Column(precision = 18, scale = 2)
+    private BigDecimal thanhToanCuoi;
+
+    @Column(precision = 18, scale = 2)
+    private BigDecimal tienGiamTruVIP;
+
+    @Column(precision = 18, scale = 2)
+    private BigDecimal tongTienPhong;
+
     private String trangThaiDon;
-    private Double tyLeGiamVIP;
+
+    @Column(precision = 5, scale = 2)
+    private BigDecimal tyLeGiamVIP;
 
     public DonDatPhong() {
     }
 
-    public DonDatPhong(String maDonDatPhong, LocalDate checkin, LocalDate checkout, Double giamGiaKhac,
-                       String maKhachHang, String maKhuyenMai, LocalDate ngayDat, Double thanhToanCuoi,
-                       Double tienGiamTruVIP, Double tongTienPhong, String trangThaiDon, Double tyLeGiamVIP) {
+    public DonDatPhong(String maDonDatPhong, LocalDate checkin, LocalDate checkout, BigDecimal giamGiaKhac,
+                       String maKhachHang, String maKhuyenMai, LocalDate ngayDat, BigDecimal thanhToanCuoi,
+                       BigDecimal tienGiamTruVIP, BigDecimal tongTienPhong, String trangThaiDon, BigDecimal tyLeGiamVIP) {
         this.maDonDatPhong = maDonDatPhong;
         this.checkin = checkin;
         this.checkout = checkout;
@@ -47,26 +61,37 @@ public class DonDatPhong {
     // getter & setter dùng đúng kiểu dữ liệu
     public String getMaDonDatPhong() { return maDonDatPhong; }
     public void setMaDonDatPhong(String maDonDatPhong) { this.maDonDatPhong = maDonDatPhong; }
+
     public String getMaKhachHang() { return maKhachHang; }
     public void setMaKhachHang(String maKhachHang) { this.maKhachHang = maKhachHang; }
+
     public LocalDate getNgayDat() { return ngayDat; }
     public void setNgayDat(LocalDate ngayDat) { this.ngayDat = ngayDat; }
+
     public LocalDate getCheckin() { return checkin; }
     public void setCheckin(LocalDate checkin) { this.checkin = checkin; }
+
     public LocalDate getCheckout() { return checkout; }
     public void setCheckout(LocalDate checkout) { this.checkout = checkout; }
-    public Double getTongTienPhong() { return tongTienPhong; }
-    public void setTongTienPhong(Double tongTienPhong) { this.tongTienPhong = tongTienPhong; }
-    public Double getTyLeGiamVIP() { return tyLeGiamVIP; }
-    public void setTyLeGiamVIP(Double tyLeGiamVIP) { this.tyLeGiamVIP = tyLeGiamVIP; }
-    public Double getTienGiamTruVIP() { return tienGiamTruVIP; }
-    public void setTienGiamTruVIP(Double tienGiamTruVIP) { this.tienGiamTruVIP = tienGiamTruVIP; }
+
+    public BigDecimal getTongTienPhong() { return tongTienPhong; }
+    public void setTongTienPhong(BigDecimal tongTienPhong) { this.tongTienPhong = tongTienPhong; }
+
+    public BigDecimal getTyLeGiamVIP() { return tyLeGiamVIP; }
+    public void setTyLeGiamVIP(BigDecimal tyLeGiamVIP) { this.tyLeGiamVIP = tyLeGiamVIP; }
+
+    public BigDecimal getTienGiamTruVIP() { return tienGiamTruVIP; }
+    public void setTienGiamTruVIP(BigDecimal tienGiamTruVIP) { this.tienGiamTruVIP = tienGiamTruVIP; }
+
     public String getMaKhuyenMai() { return maKhuyenMai; }
     public void setMaKhuyenMai(String maKhuyenMai) { this.maKhuyenMai = maKhuyenMai; }
-    public Double getGiamGiaKhac() { return giamGiaKhac; }
-    public void setGiamGiaKhac(Double giamGiaKhac) { this.giamGiaKhac = giamGiaKhac; }
-    public Double getThanhToanCuoi() { return thanhToanCuoi; }
-    public void setThanhToanCuoi(Double thanhToanCuoi) { this.thanhToanCuoi = thanhToanCuoi; }
+
+    public BigDecimal getGiamGiaKhac() { return giamGiaKhac; }
+    public void setGiamGiaKhac(BigDecimal giamGiaKhac) { this.giamGiaKhac = giamGiaKhac; }
+
+    public BigDecimal getThanhToanCuoi() { return thanhToanCuoi; }
+    public void setThanhToanCuoi(BigDecimal thanhToanCuoi) { this.thanhToanCuoi = thanhToanCuoi; }
+
     public String getTrangThaiDon() { return trangThaiDon; }
     public void setTrangThaiDon(String trangThaiDon) { this.trangThaiDon = trangThaiDon; }
 }
