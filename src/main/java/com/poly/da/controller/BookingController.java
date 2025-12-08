@@ -1,5 +1,6 @@
 package com.poly.da.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.poly.da.dto.BookingRequest;
 import com.poly.da.entity.KhachSan;
 import com.poly.da.repository.KhachSanRepository;
 
@@ -58,5 +62,23 @@ public class BookingController {
              // Tùy chọn 2: Chuyển hướng về trang chủ/tìm kiếm
              return "redirect:/booking"; 
          }
+	 }
+	 @PostMapping("/checkout")
+	 public String processCheckout(
+	     @ModelAttribute BookingRequest booking, // Spring tự động điền dữ liệu vào đối tượng này
+	     Model model) {
+	     
+	     // Bây giờ bạn có thể truy cập tất cả thông tin qua đối tượng 'booking'
+	     String tenKhachSan = booking.getHotelName();
+	     LocalDate ngayNhan = booking.getCheckIn();
+	     
+	     // 1. Logic xử lý:
+	     // ...
+	     
+	     // 2. Chuyển thông tin sang trang Checkout
+	     model.addAttribute("bookingData", booking);
+	     
+	     // 3. Chuyển hướng
+	     return "checkout"; 
 	 }
 }

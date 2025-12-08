@@ -98,6 +98,7 @@
 
         <div class="hotel-details-container">
 
+            <!-- Gallery -->
             <div class="image-gallery">
                 <div class="main-image-container">
                     <img th:src="@{'/images/' + *{urlHinhAnhDaiDien}}" 
@@ -106,11 +107,13 @@
                 </div>
             </div>
 
+            <!-- Thông tin khách sạn -->
             <div class="section-box">
                 <h2>Về Khách Sạn</h2>
                 <p th:text="*{moTa}">Mô tả chi tiết về khách sạn và dịch vụ.</p>
             </div>
 
+            <!-- Tiện nghi -->
             <div class="section-box">
                 <h2><i class="fas fa-concierge-bell"></i> Tiện nghi & Dịch vụ Nổi bật</h2>
                 <div class="amenities-list">
@@ -125,6 +128,7 @@
                 </div>
             </div>
 
+            <!-- Loại phòng -->
             <div class="section-box">
                 <h2><i class="fas fa-bed"></i> Chọn Loại Phòng</h2>
                 <div th:if="${roomTypes != null and not #lists.isEmpty(roomTypes)}">
@@ -159,17 +163,20 @@
                 </div>
             </div>
 
+            <!-- Đánh giá -->
             <div class="section-box">
                 <h2><i class="fas fa-comments"></i> Đánh giá Khách hàng 
                     (<span th:text="${reviews != null ? reviews.size() : 0}">0</span> lượt)
                 </h2>
 
+                <!-- Flash messages -->
                 <div th:if="${#fields.hasGlobalErrors()}" class="flash-message flash-error">
                     <span th:each="err : ${#fields.globalErrors()}" th:text="${err}"></span>
                 </div>
                 <div th:if="${successMessage}" class="flash-message flash-success" th:text="${successMessage}"></div>
                 <div th:if="${errorMessage}" class="flash-message flash-error" th:text="${errorMessage}"></div>
 
+                <!-- Danh sách đánh giá -->
                 <div th:if="${reviews != null and not #lists.isEmpty(reviews)}">
                     <div class="review-card" th:each="review : ${reviews}">
                         <div class="reviewer-meta">
@@ -187,6 +194,7 @@
                     Chưa có đánh giá nào cho khách sạn này. Hãy là người đầu tiên!
                 </div>
 
+                <!-- Form gửi đánh giá -->
                 <div class="review-form-box">
                     <h3>Gửi Đánh Giá Của Bạn</h3>
                     <form th:action="@{/submit-review}" method="post">
@@ -206,6 +214,7 @@
 
         </div>
 
+        <!-- Booking Widget bên phải -->
         <aside class="booking-widget">
             <div class="price-display">
                 <small>Giá tốt nhất từ</small>
@@ -242,6 +251,7 @@
     </div>
 </div>
 
+<!-- Modal đặt phòng -->
 <div id="bookingModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeBookingModal()">&times;</span>
@@ -251,7 +261,6 @@
             <p>Khách sạn: <strong th:text="*{tenKhachSan}">Tên Khách Sạn</strong></p>
             <p id="modalRoomDetails">Vui lòng chọn loại phòng</p>
             
-            <input type="hidden" name="hotelName" th:value="*{tenKhachSan}"> 
             <input type="hidden" id="selectedRoomId" name="selectedRoomId">
 
             <div class="form-group">
@@ -289,60 +298,67 @@
     </div>
 </div>
 
+<!-- JS modal + booking -->
 <script>
-	var modal = document.getElementById("bookingModal");
-	let selectedRoomId = null;
-	let selectedRoomName = null;
-	let selectedRoomPrice = null;
-	
-	function openBookingModal(button) {
-	    // Cập nhật ngày tháng và số khách từ widget bên phải
-	    document.getElementById('checkIn').value = document.getElementById('widgetCheckIn').value;
-	    document.getElementById('checkOut').value = document.getElementById('widgetCheckOut').value;
-	    document.getElementById('numGuests').value = document.getElementById('widgetGuests').value;
-	
-	    const roomDetailsElement = document.getElementById('modalRoomDetails');
-	    const submitButton = document.querySelector('#bookingForm .submit-btn');
-	
-	    if (button) {
-	        // Nếu click từ nút "Chọn Phòng" cụ thể
-	        selectedRoomId = button.getAttribute('data-room-id');
-	        selectedRoomName = button.getAttribute('data-room-name');
-	        selectedRoomPrice = button.getAttribute('data-price');
-	
-	        document.getElementById('selectedRoomId').value = selectedRoomId;
-	        roomDetailsElement.innerHTML = `Loại phòng đã chọn: <strong>${selectedRoomName}</strong> (Giá: <strong>${selectedRoomPrice} VNĐ/đêm</strong>)`;
-	        submitButton.disabled = false;
-	        submitButton.style.backgroundColor = 'var(--success-color)';
-	    } else {
-	        // Nếu click từ nút "TIẾN HÀNH ĐẶT PHÒNG" widget (cần chọn phòng)
-            // Lấy lại thông tin phòng nếu đã chọn trước đó
-            if (selectedRoomId) {
-                document.getElementById('selectedRoomId').value = selectedRoomId;
-                roomDetailsElement.innerHTML = `Loại phòng đã chọn: <strong>${selectedRoomName}</strong> (Giá: <strong>${selectedRoomPrice} VNĐ/đêm</strong>)`;
-                submitButton.disabled = false;
-	            submitButton.style.backgroundColor = 'var(--success-color)';
-            } else {
-                roomDetailsElement.innerHTML = `<span style="color: red;">⚠️ Vui lòng quay lại và chọn một loại phòng cụ thể.</span>`;
-                document.getElementById('selectedRoomId').value = '';
-                submitButton.disabled = true;
-                submitButton.style.backgroundColor = '#ccc';
-            }
-	    }
-	
-	    modal.style.display = "block";
-	}
-	
-	function closeBookingModal() {
-	    modal.style.display = "none";
-	}
-	
-    // HÀM submitBooking VỚI ALERT GIẢ LẬP ĐÃ BỊ XÓA BỎ.
-    // Việc submit sẽ được thực hiện tự động bởi Form khi bấm type="submit"
-	
-	window.onclick = function(event) {
-	    if (event.target == modal) { closeBookingModal(); }
-	}
+var modal = document.getElementById("bookingModal");
+let selectedRoomId = null;
+let selectedRoomName = null;
+let selectedRoomPrice = null;
+
+function openBookingModal(button) {
+    document.getElementById('checkIn').value = document.getElementById('widgetCheckIn').value;
+    document.getElementById('checkOut').value = document.getElementById('widgetCheckOut').value;
+    document.getElementById('numGuests').value = document.getElementById('widgetGuests').value;
+
+    const roomDetailsElement = document.getElementById('modalRoomDetails');
+    const submitButton = document.querySelector('#bookingForm .submit-btn');
+
+    if (button) {
+        selectedRoomId = button.getAttribute('data-room-id');
+        selectedRoomName = button.getAttribute('data-room-name');
+        selectedRoomPrice = button.getAttribute('data-price');
+
+        document.getElementById('selectedRoomId').value = selectedRoomId;
+        roomDetailsElement.innerHTML = `Loại phòng đã chọn: <strong>${selectedRoomName}</strong> (Giá: <strong>${selectedRoomPrice} VNĐ/đêm</strong>)`;
+        submitButton.disabled = false;
+        submitButton.style.backgroundColor = 'var(--success-color)';
+    } else {
+        roomDetailsElement.innerHTML = `<span style="color: red;">⚠️ Vui lòng quay lại và chọn một loại phòng cụ thể.</span>`;
+        selectedRoomId = null;
+        document.getElementById('selectedRoomId').value = '';
+        submitButton.disabled = true;
+        submitButton.style.backgroundColor = '#ccc';
+    }
+
+    modal.style.display = "block";
+}
+
+function closeBookingModal() {
+    modal.style.display = "none";
+}
+
+function submitBooking(event) {
+    event.preventDefault(); 
+    if (!selectedRoomId) {
+        alert("Vui lòng chọn một loại phòng cụ thể trước khi xác nhận!");
+        return;
+    }
+    const formData = new FormData(event.target);
+    const bookingDetails = Object.fromEntries(formData.entries());
+    const hotelName = document.querySelector('.header-content h1').textContent;
+
+    alert(`✅ ĐẶT PHÒNG THÀNH CÔNG!\n\nKhách sạn: ${hotelName}\nPhòng: ${selectedRoomName} (ID: ${selectedRoomId})\nGiá: ${selectedRoomPrice} VNĐ/đêm\nNhận phòng: ${bookingDetails.checkIn}\nTrả phòng: ${bookingDetails.checkOut}\n\nChúng tôi sẽ gửi xác nhận chi tiết qua email.`);
+
+    closeBookingModal(); 
+    document.getElementById("bookingForm").reset(); 
+    selectedRoomId = null;
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) { closeBookingModal(); }
+}
 </script>
 </body>
 </html>
+
+

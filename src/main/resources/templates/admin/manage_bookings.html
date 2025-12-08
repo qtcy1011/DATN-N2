@@ -110,15 +110,24 @@
         <td th:text="${don.thanhToanCuoi}"></td>
         <td th:text="${don.trangThaiDon}"></td>
         <td>
-            <a th:href="@{'/admin/edit_bookings/' + ${don.maDonDatPhong}}" class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil-square"></i> Sửa
-            </a>
-            <a th:href="@{'/admin/delete_booking/' + ${don.maDonDatPhong}}"
-               onclick="return confirm('Bạn có chắc muốn xóa đơn này không?');"
-               class="btn btn-danger btn-sm">
-                <i class="bi bi-trash3"></i> Xóa
-            </a>
-        </td>
+    <div class="d-flex justify-content-center gap-2">
+
+        <!-- Sửa -->
+        <a th:href="@{'/admin/edit_bookings/' + ${don.maDonDatPhong}}"
+           class="btn btn-warning btn-sm">
+            <i class="bi bi-pencil-square"></i> Sửa
+        </a>
+
+        <!-- Xóa -->
+        <a th:href="@{'/admin/delete_bookings/' + ${don.maDonDatPhong}}"
+           onclick="return confirm('Bạn có chắc muốn xóa đơn này không?');"
+           class="btn btn-danger btn-sm">
+            <i class="bi bi-trash3"></i> Xóa
+        </a>
+
+    </div>
+</td>
+
     </tr>
 </tbody>
 

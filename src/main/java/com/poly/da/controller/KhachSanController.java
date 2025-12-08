@@ -8,8 +8,6 @@ import com.poly.da.repository.KhachSanRepository;
 import com.poly.da.repository.DanhGiaRepository;
 import com.poly.da.service.RatingService;
 import com.poly.da.service.LoaiPhongService;
-// ⭐️ IMPORT MỚI: Cần import đối tượng BookingRequest
-import com.poly.da.dto.BookingRequest; // <--- Cập nhật đường dẫn package thực tế của BookingRequest
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -163,59 +161,5 @@ public class KhachSanController {
         }
 
         return "redirect:/hotel/" + maKhachSan;
-    }
-    
-    // ----------------------------------------------------------
-    // 4. Xử lý Đặt Phòng (CHECKOUT)
-    // ----------------------------------------------------------
-    /**
-     * Xử lý dữ liệu đặt phòng gửi từ form trong trang hotel-detail.
-     * Sử dụng @ModelAttribute để ánh xạ dữ liệu form vào BookingRequest.
-     */
-    @PostMapping("/checkout")
-    public String processBooking(@ModelAttribute BookingRequest bookingRequest, RedirectAttributes redirectAttributes) {
-        
-        // ⭐️ Lấy MaKhachSan để redirect lại trang chi tiết nếu cần. 
-        // Vì MaKhachSan không có trong BookingRequest, ta cần tìm cách lấy nó 
-        // (ví dụ: tìm kiếm từ hotelName hoặc thêm trường MaKhachSan vào BookingRequest).
-        // Tạm thời giả định MaKhachSan là 1 để tránh lỗi biên dịch.
-        Integer maKhachSan = 1; 
-
-        if (bookingRequest.getSelectedRoomId() == null || bookingRequest.getCheckIn() == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Thiếu thông tin đặt phòng cần thiết.");
-            return "redirect:/hotel/" + maKhachSan; 
-        }
-
-        try {
-            // --- BẮT ĐẦU LOGIC ĐẶT PHÒNG THỰC TẾ ---
-            
-            // 1. Kiểm tra ngày tháng
-            if (bookingRequest.getCheckIn().isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("Ngày nhận phòng không hợp lệ.");
-            }
-            
-            // 2. Thực hiện lưu vào database (Tùy thuộc vào Service/Repository của bạn)
-            // bookingService.saveBooking(bookingRequest);
-            
-            System.out.println("✅ Đặt phòng thành công:");
-            System.out.println("Khách: " + bookingRequest.getFullName());
-            System.out.println("Email: " + bookingRequest.getEmail());
-            System.out.println("Phòng ID: " + bookingRequest.getSelectedRoomId());
-            
-            // --- KẾT THÚC LOGIC ĐẶT PHÒNG THÀNH CÔNG ---
-
-            redirectAttributes.addFlashAttribute("successMessage", "Đơn đặt phòng đã được xác nhận thành công!");
-            redirectAttributes.addFlashAttribute("confirmationDetails", bookingRequest);
-            
-            // Chuyển hướng đến trang xác nhận (bạn cần tạo view confirmation.html)
-            return "redirect:/checkout"; 
-
-        } catch (Exception e) {
-            System.err.println("Lỗi đặt phòng: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: Đặt phòng không thành công. " + e.getMessage());
-            
-            // Chuyển hướng về trang chi tiết khách sạn
-            return "redirect:/hotel/" + maKhachSan; 
-        }
     }
 }
