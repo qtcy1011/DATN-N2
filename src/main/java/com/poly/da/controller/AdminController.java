@@ -1,8 +1,8 @@
 package com.poly.da.controller;
 
 import com.poly.da.entity.KhachHang;
-import com.poly.da.entity.LoaiPhong;
-import com.poly.da.repository.LoaiPhongRepository;
+import com.poly.da.entity.RoomType;
+import com.poly.da.repository.RoomTypeRepository;
 import com.poly.da.service.IKhachHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ public class AdminController {
     private final IKhachHangService khachHangService;
 
     @Autowired
-    private LoaiPhongRepository LoaiPhongRepo;
+    private RoomTypeRepository roomTypeRepo;
 
     @Autowired
     public AdminController(IKhachHangService khachHangService) {
@@ -35,14 +35,14 @@ public class AdminController {
     // Hiển thị danh sách loại phòng
     @GetMapping("/manage_rooms")
     public String showRooms(Model model) {
-        model.addAttribute("rooms", LoaiPhongRepo.findAll());
+        model.addAttribute("rooms", roomTypeRepo.findAll());
         return "admin/manage_rooms";
     }
 
     // Form chỉnh sửa loại phòng
     @GetMapping("/edit_room/{maLoaiPhong}")
-    public String editRoom(@PathVariable("maLoaiPhong") Integer maLoaiPhong, Model model) { // Đã sửa sang Integer
-        Optional<LoaiPhong> roomOpt = LoaiPhongRepo.findById(maLoaiPhong); // Đã sửa sang Integer
+    public String editRoom(@PathVariable("maLoaiPhong") String maLoaiPhong, Model model) {
+        Optional<RoomType> roomOpt = roomTypeRepo.findById(maLoaiPhong);
         if (roomOpt.isPresent()) {
             model.addAttribute("room", roomOpt.get());
             return "admin/edit_room";
@@ -53,15 +53,15 @@ public class AdminController {
 
     // Cập nhật loại phòng sau khi chỉnh sửa
     @PostMapping("/update_room")
-    public String updateRoom(@ModelAttribute("room") LoaiPhong room) {
-        LoaiPhongRepo.save(room);
+    public String updateRoom(@ModelAttribute("room") RoomType room) {
+        roomTypeRepo.save(room);
         return "redirect:/admin/manage_rooms";
     }
 
     // Xóa loại phòng
     @GetMapping("/delete_room/{maLoaiPhong}")
-    public String deleteRoom(@PathVariable("maLoaiPhong") Integer maLoaiPhong) { // Đã sửa sang Integer
-        LoaiPhongRepo.deleteById(maLoaiPhong); // Sửa cú pháp từ deleteAll thành deleteById
+    public String deleteRoom(@PathVariable("maLoaiPhong") String maLoaiPhong) {
+        roomTypeRepo.deleteById(maLoaiPhong);
         return "redirect:/admin/manage_rooms";
     }
 
