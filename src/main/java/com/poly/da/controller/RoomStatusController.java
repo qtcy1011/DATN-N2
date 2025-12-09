@@ -1,23 +1,38 @@
 package com.poly.da.controller;
 
 import com.poly.da.repository.PhongRepository;
+import com.poly.da.service.PhongService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/phong")
 public class RoomStatusController {
 
     @Autowired
-    private PhongRepository phongRepo;
+    private PhongService service;
 
-    @GetMapping("/admin/room-status")
-    public String roomStatus(Model model) {
+    @GetMapping("/tatca")
+    public String allRooms(Model model) {
+        model.addAttribute("list", service.getAll());
+        return "admin/list";
+    }
 
-        model.addAttribute("available", phongRepo.getRoomsAvailableNow());
-        model.addAttribute("occupied", phongRepo.getRoomsOccupiedNow());
+    @GetMapping("/trong")
+    public String roomsAvailable(Model model) {
+        model.addAttribute("list", service.getRoomsAvailable());
+        return "admin/list";
+    }
 
-        return "admin/room_status";
+    @GetMapping("/cokhach")
+    public String roomsOccupied(Model model) {
+        model.addAttribute("list", service.getRoomsOccupied());
+        return "admin/list";
     }
 }
+
+
